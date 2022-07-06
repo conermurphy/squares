@@ -1,33 +1,34 @@
 {
-  "name": "sqrs",
-  "version": "0.0.0",
-  "private": true,
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
-  "scripts": {
-    "build": "turbo run build",
-    "dev": "turbo run dev --parallel",
-    "lint": "turbo run lint",
-    "test": "jest --passWithNoTests",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "prepare": "husky install"
-  },
-  "devDependencies": {
-    "@commitlint/cli": "^17.0.3",
-    "@commitlint/config-conventional": "^17.0.3",
-    "@testing-library/jest-dom": "^5.16.4",
-    "@testing-library/react": "^13.3.0",
-    "husky": "^8.0.0",
-    "jest-environment-jsdom": "^28.1.2",
-    "turbo": "latest",
-    "typescript": "^4.7.4",
-    "eslint-config-custom": "*"
-  },
-  "engines": {
-    "npm": ">=7.0.0",
-    "node": ">=14.0.0"
-  },
-  "packageManager": "npm@8.5.5"
+    "name": "sqrs",
+    "version": "0.0.0",
+    "private": true,
+    "workspaces": [
+        "apps/*",
+        "packages/*"
+    ],
+    "scripts": {
+        "build": "turbo run build",
+        "dev": "turbo run dev --parallel",
+        "lint": "turbo run lint",
+        "test": "jest --passWithNoTests",
+        "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+        "prepare": "husky install"
+    },
+    "devDependencies": {
+        "@commitlint/cli": "^17.0.3",
+        "@commitlint/config-conventional": "^17.0.3",
+        "@testing-library/jest-dom": "^5.16.4",
+        "@testing-library/react": "^13.3.0",
+        "husky": "^8.0.0",
+        "jest-environment-jsdom": "^28.1.2",
+        "turbo": "latest",
+        "typescript": "^4.7.4",
+        "eslint-config-custom": "*",
+        "tsconfig": "*"
+    },
+    "engines": {
+        "npm": ">=7.0.0",
+        "node": ">=14.0.0"
+    },
+    "packageManager": "npm@8.5.5"
 }

@@ -7,8 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "prepare": "cd ../.. && husky install",
-    "postinstall": "npx prisma generate"
+    "prepare": "cd ../.. && husky install"
   },
   "dependencies": {
     "@prisma/client": "^4.0.0",

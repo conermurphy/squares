@@ -12,7 +12,8 @@
         "lint": "turbo run lint",
         "test": "jest --passWithNoTests",
         "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-        "prepare": "husky install"
+        "prepare": "husky install",
+        "postinstall": "cd apps/app && npx prisma generate"
     },
     "devDependencies": {
         "@commitlint/cli": "^17.0.3",

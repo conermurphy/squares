@@ -3,7 +3,9 @@
     "include": [
         "next-env.d.ts",
         "**/*.ts",
-        "**/*.tsx"
+        "**/*.tsx",
+        "lib/prisma.js",
+        "pages/api/stars.js"
     ],
     "exclude": [
         "node_modules"

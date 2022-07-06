@@ -1,5 +1,5 @@
-{
-  "extends": [
+module.exports = {
+  extends: [
       "wesbos/typescript",
       "prettier",
       "next/core-web-vitals",
@@ -7,16 +7,16 @@
       "plugin:@typescript-eslint/recommended",
       "plugin:@typescript-eslint/recommended-requiring-type-checking"
   ],
-  "plugins": [
+  plugins: [
       "jest",
       "prettier"
   ],
-  "parserOptions": {
+  parserOptions: {
       "project": [
           "./tsconfig.json"
       ]
   },
-  "rules": {
+  rules: {
       "quotes": [
           2,
           "single",

@@ -20,12 +20,13 @@
         "@commitlint/config-conventional": "^17.0.3",
         "@testing-library/jest-dom": "^5.16.4",
         "@testing-library/react": "^13.3.0",
+        "eslint-config-custom": "*",
         "husky": "^8.0.0",
         "jest-environment-jsdom": "^28.1.2",
+        "lint-staged": "^13.0.3",
+        "tsconfig": "*",
         "turbo": "latest",
-        "typescript": "^4.7.4",
-        "eslint-config-custom": "*",
-        "tsconfig": "*"
+        "typescript": "^4.7.4"
     },
     "engines": {
         "npm": ">=7.0.0",

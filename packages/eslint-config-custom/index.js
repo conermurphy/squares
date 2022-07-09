@@ -58,6 +58,11 @@ module.exports = {
       presets: ['@babel/preset-react'],
     },
   },
+  settings: {
+    next: {
+      rootDir: 'apps/*/',
+    },
+  },
   rules: {
     'no-redeclare': 'off',
     'no-unused-vars': 0,

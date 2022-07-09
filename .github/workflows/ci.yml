@@ -28,10 +28,16 @@ jobs:
           cache: "npm"
 
       - name: Install dependencies
-        run: npm install -force
+        run: npm install
 
       - name: Build
         run: npm run build
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Commitlint
+        run: npx commitlint --from $(get rev-parse origin/main) --to $GITHUB_SHA
 
       - name: Test
         run: npm run test

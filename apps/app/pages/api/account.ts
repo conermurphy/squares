@@ -1,15 +1,23 @@
+import { User } from '@prisma/client';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { getSession } from 'next-auth/react';
 import { prisma } from '../../lib/prisma';
 
 export default async function assetHandler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  const session = await getSession({ req });
+
+  if (!session) {
+    res.status(401).json({ error: 'Permission Denied' });
+  }
+
   switch (req.method) {
     case 'GET':
       try {
-        const stars = await prisma.star.findMany();
-        res.status(200).json(stars);
+        const users: User[] = await prisma.user.findMany();
+        res.status(200).json(users);
       } catch (e) {
         res.status(500).json({ error: 'Error fetching posts' });
       }

@@ -1,6 +1,7 @@
 import { GetServerSideProps } from 'next';
 import { Session } from 'next-auth';
-import { useSession, signIn, signOut, getSession } from 'next-auth/react';
+import { useSession, signIn, signOut } from 'next-auth/react';
+import { handleAuthRedirect } from '../utils';
 
 export default function Home() {
   const { data: session } = useSession();
@@ -23,8 +24,15 @@ export default function Home() {
 
 export const getServerSideProps: GetServerSideProps<{
   session: Session | null;
-}> = async (context) => ({
-  props: {
-    session: await getSession(context),
-  },
-});
+}> = async (context) => {
+  const { redirect, session } = await handleAuthRedirect({
+    context,
+    path: context?.resolvedUrl,
+  });
+
+  return redirect?.destination
+    ? { redirect }
+    : {
+        props: { session },
+      };
+};

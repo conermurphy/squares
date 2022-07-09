@@ -1,9 +1,8 @@
-import { User } from '@prisma/client';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from 'next-auth/react';
 import { prisma } from '../../lib/prisma';
 
-export default async function assetHandler(
+export default async function commits(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
@@ -16,8 +15,8 @@ export default async function assetHandler(
   switch (req.method) {
     case 'GET':
       try {
-        const users: User[] = await prisma.user.findMany();
-        res.status(200).json(users);
+        const commitsData = await prisma.commit.findMany();
+        res.status(200).json(commitsData);
       } catch (e) {
         res.status(500).json({ error: 'Error fetching posts' });
       }

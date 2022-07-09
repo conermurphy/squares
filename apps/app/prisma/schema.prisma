@@ -54,3 +54,9 @@ model VerificationToken {
 
   @@unique([identifier, token])
 }
+
+model Commit {
+  id      String @id
+  SHA     String @default("some SHA")
+  message String @default("some Message") @db.Text
+}

@@ -28,10 +28,16 @@ jobs:
           cache: "npm"
 
       - name: Install dependencies
-        run: npm install -force
+        run: npm install
 
       - name: Build
         run: npm run build
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Commitlint
+        run: npx commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
 
       - name: Test
         run: npm run test

@@ -37,7 +37,7 @@ jobs:
         run: npm run lint
 
       - name: Commitlint
-        run: npx commitlint --from "$(git rev-parse origin/main)" --to $GITHUB_SHA
+        run: npx commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
 
       - name: Test
         run: npm run test

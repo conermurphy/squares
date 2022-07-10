@@ -33,7 +33,12 @@ then
   exit 0
 fi
 
-if [[ $BUILD_STATUS == "CANCELED" || $BUILD_STATUS != "ERROR"]]
+if [[ $BUILD_STATUS == "CANCELED" ]]
+then
+  exit 0
+fi
+
+if [[ $BUILD_STATUS != "ERROR" ]]
 then
   echo "Exiting with an error due to build status: $BUILD_STATUS"
   exit 1

@@ -1,7 +1,7 @@
 const axios = require('axios');
 
 async function vercel() {
-  const [action, project] = process.argv.slice(2);
+  const [action] = process.argv.slice(2);
 
   try {
     const apiVersion = action === 'alias' ? 'v2' : 'v13';
@@ -9,7 +9,7 @@ async function vercel() {
       process.env.BUILD_ID ? `/${process.env.BUILD_ID}` : ''
     }${action === 'alias' ? '/aliases' : ''}`;
 
-    const alias = `staging-${project}.vercel.app`;
+    const alias = `staging-sqrs-app.vercel.app`;
 
     const config = {
       method: action === 'check' ? 'GET' : 'POST',
@@ -19,16 +19,20 @@ async function vercel() {
       },
     };
 
+    // eslint-disable-next-line
+    console.log(process.env.GITHUB_REF_NAME);
+
     switch (action) {
       case 'trigger':
         await axios({
           ...config,
           data: {
+            name: 'sqrs-app',
             project: 'sqrs-app',
             gitSource: {
               type: 'github',
-              repoId: process.env.GITHUB_REPOSITORY,
-              sha: process.env.GITHUB_SHA,
+              repoId: process.env.REPO_ID,
+              ref: process.env.GITHUB_REF_NAME,
             },
           },
         }).then((res) => {

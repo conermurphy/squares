@@ -19,9 +19,6 @@ async function vercel() {
       },
     };
 
-    // eslint-disable-next-line
-    console.log(process.env.GITHUB_REF_NAME);
-
     switch (action) {
       case 'trigger':
         await axios({
@@ -31,8 +28,8 @@ async function vercel() {
             project: 'sqrs-app',
             gitSource: {
               type: 'github',
-              repoId: process.env.REPO_ID,
-              ref: process.env.GITHUB_REF_NAME,
+              repoId: parseInt(process.env.REPO_ID),
+              ref: process.env.GITHUB_HEAD_REF.replace('#', '%23'),
             },
           },
         }).then((res) => {
@@ -64,8 +61,10 @@ async function vercel() {
         break;
     }
   } catch (e) {
-    // eslint-disable-next-line
+    /* eslint-disable */
+    console.error(e);
     console.error("Request failed");
+    /* eslint-enable */
   }
 }
 

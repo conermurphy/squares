@@ -65,4 +65,7 @@ jobs:
         run: npm install
 
       - name: Vercel Build App
+        env:
+          REPO_ID: ${{ secrets.REPO_ID }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: ./scripts/vercel.sh

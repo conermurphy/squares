@@ -9,7 +9,7 @@ async function vercel() {
       process.env.BUILD_ID ? `/${process.env.BUILD_ID}` : ''
     }${action === 'alias' ? '/aliases' : ''}`;
 
-    const alias = `staging-sqrs-app.vercel.app`;
+    const alias = `staging-squares-app.vercel.app`;
 
     const config = {
       method: action === 'check' ? 'GET' : 'POST',
@@ -24,8 +24,8 @@ async function vercel() {
         await axios({
           ...config,
           data: {
-            name: 'sqrs-app',
-            project: 'sqrs-app',
+            name: 'squares-app',
+            project: 'squares-app',
             gitSource: {
               type: 'github',
               repoId: parseInt(process.env.REPO_ID),

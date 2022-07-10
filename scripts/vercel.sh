@@ -2,18 +2,18 @@
 
 BUILD_STATUS=""
 
-export BUILD_ID=$( node ./scripts/vercel.js trigger $1)
+export BUILD_ID=$( node ./scripts/vercel.js trigger)
 
 echo "Vercel Build ID is $BUILD_ID"
 
 while [[ $BUILD_STATUS != "READY" && $BUILD_STATUS != "CANCELED" && $BUILD_STATUS != "ERROR" ]]
 do
 
-  BUILD_STATUS=$( node ./scripts/vercel.js check $1)
+  BUILD_STATUS=$( node ./scripts/vercel.js check)
 
   echo "Build Status is: $BUILD_STATUS"
 
-  if [[ $( echo $BUILD_STATUS | grep -q 'Error: Request failed with status code' ) ]]
+  if [[ $( echo $BUILD_STATUS | grep -q 'Request failed' ) ]]
   then
     echo "Exiting with error due to: $BUILD_STATUS"
     exit 1
@@ -28,7 +28,7 @@ done
 
 if [[ $BUILD_STATUS == "READY" ]]
 then
-  ALIAS_OUTCOME=$(node ./scripts/vercel.js "alias" $1)
+  ALIAS_OUTCOME=$(node ./scripts/vercel.js "alias")
   echo $ALIAS_OUTCOME
   exit 0
 fi

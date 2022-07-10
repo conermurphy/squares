@@ -65,7 +65,4 @@ jobs:
         run: npm install
 
       - name: Vercel Build App
-        run: ./scripts/vercel.sh sqrs-app
-
-      - name: Vercel Build Web
-        run: ./scripts/vercel.sh sqrs
+        run: ./scripts/vercel.sh

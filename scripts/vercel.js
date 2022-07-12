@@ -62,8 +62,8 @@ async function vercel() {
     }
   } catch (e) {
     /* eslint-disable */
-    console.error(e);
     console.error("Request failed");
+    console.error(e.response.data);
     /* eslint-enable */
   }
 }

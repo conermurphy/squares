@@ -9,7 +9,7 @@ async function vercel() {
       process.env.BUILD_ID ? `/${process.env.BUILD_ID}` : ''
     }${action === 'alias' ? '/aliases' : ''}`;
 
-    const alias = `staging-squares-app.vercel.app`;
+    const alias = `staging.squares.so`;
 
     const config = {
       method: action === 'check' ? 'GET' : 'POST',

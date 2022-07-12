@@ -1,5 +1,5 @@
 {
-    "name": "sqrs",
+    "name": "squares",
     "version": "0.0.0",
     "private": true,
     "workspaces": [
@@ -13,7 +13,11 @@
         "test": "jest --passWithNoTests",
         "format": "prettier --write \"**/*.{ts,tsx,md}\"",
         "prepare": "husky install",
-        "postinstall": "cd apps/app && npx prisma generate"
+        "postinstall": "cd apps/app && npx prisma generate",
+        "prisma:push": "cd apps/app && npx prisma db push"
+    },
+    "dependencies": {
+        "axios": "^0.27.2"
     },
     "devDependencies": {
         "@commitlint/cli": "^17.0.3",

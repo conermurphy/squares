@@ -14,13 +14,15 @@
     "next": "12.2.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "tailwind-config": "*"
+    "react-icons": "^4.4.0",
+    "tailwind-config": "*",
+    "axios": "^0.27.2"
   },
   "devDependencies": {
-    "eslint-config-custom": "*",
-    "tsconfig": "*",
     "@types/react": "18.0.14",
     "eslint": "^8.19.0",
-    "husky": "^8.0.0"
+    "eslint-config-custom": "*",
+    "husky": "^8.0.0",
+    "tsconfig": "*"
   }
 }

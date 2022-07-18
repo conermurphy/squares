@@ -58,7 +58,13 @@ module.exports = {
       presets: ['@babel/preset-react'],
     },
   },
+  settings: {
+    next: {
+      rootDir: 'apps/*/',
+    },
+  },
   rules: {
+    '@next/next/no-html-link-for-pages': ['error', ['./pages/']],
     'no-redeclare': 'off',
     'no-unused-vars': 0,
     'no-unused-expressions': [

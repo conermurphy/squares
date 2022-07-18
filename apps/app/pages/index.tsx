@@ -16,8 +16,12 @@ export default function Home() {
           Sign In
         </button>
       )}
-      <h1 className="text-3xl font-bold underline">App</h1>
-      {session?.user?.name && `Welcome ${session?.user?.name}`}
+      <h1 className="text-3xl font-heading font-bold underline text-brand">
+        App
+      </h1>
+      <p className="text-accent font-body">
+        {session?.user?.name && `Welcome ${session?.user?.name}`}
+      </p>
     </div>
   );
 }

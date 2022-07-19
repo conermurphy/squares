@@ -20,7 +20,7 @@ export default function Footer() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <FaGithub size="24px" />
+            <FaGithub size="24px" title="Repository GitHub Link" />
           </a>
           <p className="opacity-75 text-left sm:text-right">
             Built for the PlanetScale & Hashnode Hackathon.

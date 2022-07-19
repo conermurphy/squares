@@ -10,5 +10,8 @@ describe('Header', () => {
 
     expect(title).toBeVisible();
     expect(link).toBeVisible();
+
+    expect(link).toHaveAttribute('href', '/#signup');
+    expect(title).toHaveAttribute('href', '/');
   });
 });

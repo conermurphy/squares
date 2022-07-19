@@ -1,16 +1,10 @@
 module.exports = {
-  setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
-  testPathIgnorePatterns: ['<rootDir>/.next/', '<rootDir>/node_modules/'],
-  testEnvironment: 'jsdom',
-  coverageThreshold: {
-    global: {
-      branches: 80,
-      functions: 80,
-      lines: 80,
-    },
-  },
+  preset: 'ts-jest',
+  testPathIgnorePatterns: ['.next', 'node_modules'],
+  testEnvironment: 'jest-environment-jsdom',
   transform: {
-    '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
+    '^.+\\.(ts|tsx)$': 'ts-jest',
   },
-  projects: ['<rootDir>/apps/*'],
+  testMatch: ['**/test.spec.[jt]s?(x)'],
+  projects: ['**/apps/*'],
 };

@@ -11,7 +11,10 @@ export default function EmailSignup(): JSX.Element {
 
   return (
     <div className="flex flex-col gap-8 text-2xl text-center">
-      <form onSubmit={submitEmail} className="flex flex-col sm:flex-row gap-4">
+      <form
+        onSubmit={submitEmail}
+        className="flex flex-col sm:flex-row justify-center gap-4"
+      >
         <input
           type="email"
           name="email"

@@ -28,6 +28,8 @@
         "husky": "^8.0.0",
         "jest-environment-jsdom": "^28.1.2",
         "lint-staged": "^13.0.3",
+        "ts-jest": "^28.0.7",
+        "jest": "^28.1.2",
         "tsconfig": "*",
         "turbo": "latest",
         "typescript": "^4.7.4"

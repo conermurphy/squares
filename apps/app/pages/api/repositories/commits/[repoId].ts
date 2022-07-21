@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from 'next-auth/react';
-import { prisma } from '../../lib/prisma';
+import { prisma } from '../../../../lib/prisma';
 
 export default async function commits(
   req: NextApiRequest,
@@ -15,7 +15,7 @@ export default async function commits(
   switch (req.method) {
     case 'GET':
       try {
-        const commitsData = await prisma.commit.findMany();
+        const commitsData = await prisma?.commit.findMany();
         return res.status(200).json(commitsData);
       } catch (e) {
         return res.status(500).json({ error: 'Error fetching posts' });

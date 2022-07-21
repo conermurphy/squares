@@ -38,13 +38,14 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String       @id @default(cuid())
   name          String?
-  email         String?   @unique
+  email         String?      @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
+  repositories  Repository[]
 }
 
 model VerificationToken {
@@ -56,7 +57,51 @@ model VerificationToken {
 }
 
 model Commit {
-  id      String @id
-  SHA     String @default("some SHA")
-  message String @default("some Message") @db.Text
+  id           String     @id
+  sha          String     @default("some SHA")
+  message      String     @default("some Message") @db.Text
+  commitDate   String
+  url          String
+  Repository   Repository @relation(fields: [repositoryId], references: [id])
+  repositoryId Int
+}
+
+model Repository {
+  id            Int           @id
+  nodeId        String
+  name          String        @default("")
+  url           String
+  watchersCount Int           @default(0)
+  forksCount    Int           @default(0)
+  createdAt     String?
+  updatedAt     String?
+  pushedAt      String?
+  starsCount    Int           @default(0)
+  owner         User          @relation(fields: [userId], references: [id])
+  userId        String
+  languages     Json
+  commits       Commit[]
+  contributors  Contributor[]
+  pullRequests  PullRequest[]
+}
+
+model Contributor {
+  id            Int          @id
+  nodeId        String
+  login         String
+  imageUrl      String
+  url           String
+  contributions Int          @default(0)
+  repositories  Repository[]
+}
+
+model PullRequest {
+  id           Int         @id
+  nodeId       String
+  url          String
+  state        String
+  title        String
+  number       Int
+  repository   Repository? @relation(fields: [repositoryId], references: [id])
+  repositoryId Int
 }

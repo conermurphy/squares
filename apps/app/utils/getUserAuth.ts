@@ -22,5 +22,9 @@ export default async function getUserAuth({ session }: IProps) {
     data: { login },
   } = await octokit.rest.users.getAuthenticated();
 
-  return { octokit, login, userId: data?.id };
+  return {
+    octokit,
+    login,
+    userId: data?.id,
+  };
 }

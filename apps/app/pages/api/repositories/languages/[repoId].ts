@@ -32,7 +32,7 @@ export default async function lanaguges(
           },
         });
 
-        return res.status(200).json(langData);
+        return res.status(200).json(langData?.languages);
       } catch (e) {
         return res.status(500).json({ error: 'Error fetching languages' });
       }

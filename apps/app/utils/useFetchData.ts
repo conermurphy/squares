@@ -1,14 +1,14 @@
-import { Contributor } from '@prisma/client';
 import { useState } from 'react';
 import { server } from '../config';
+import { ErrorMessage, ReturnDataType } from '../types/types';
 
 interface FetchDataProps {
   method: 'GET' | 'POST';
 }
 
-type ReturnDataType = {
-  [k: string]: number | string | (string | number)[];
-};
+function isError(data: ReturnDataType): data is ErrorMessage {
+  return (data as ErrorMessage).error !== undefined;
+}
 
 export default function useFetchData({ method }: FetchDataProps) {
   // Setting state to be returned depending on the outcome of the submission.
@@ -32,23 +32,23 @@ export default function useFetchData({ method }: FetchDataProps) {
           },
         });
 
-        const responseText = (await res.json()) as ReturnDataType;
+        const responseData = (await res.json()) as ReturnDataType;
 
         // check if successful or if was an error
         if (res.status >= 400 && res.status < 600) {
           // Oh no there was an error! Set to state to show user
 
-          if (responseText?.error) {
-            const { error: resError } = responseText;
+          if (isError(responseData)) {
+            const { error: resError } = responseData;
             setLoading(false);
             setError(true);
-            setMessage(resError as string);
+            setMessage(resError);
           }
         } else {
           // everyting worked successfully.
 
+          setData(responseData);
           setLoading(false);
-          setData(responseText);
         }
         break;
       }

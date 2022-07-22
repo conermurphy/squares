@@ -9,11 +9,11 @@ export default async function contributors(
 ) {
   const session = await getSession({ req });
 
-  const { octokit, login } = await getUserAuth({ session });
-
   if (!session) {
     return res.status(401).json({ error: 'Permission Denied' });
   }
+
+  const { octokit, login } = await getUserAuth({ session });
 
   switch (req.method) {
     case 'GET':
@@ -94,9 +94,7 @@ export default async function contributors(
           },
         });
 
-        return res
-          .status(200)
-          .json({ contributors: contributorsData?.contributors });
+        return res.status(200).json(contributorsData?.contributors);
       } catch (e) {
         return res.status(500).json({ error: 'Error fetching languages' });
       }

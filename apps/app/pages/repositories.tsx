@@ -1,14 +1,14 @@
-import { Repository } from '@prisma/client';
 import { GetServerSideProps } from 'next';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { GoGitCommit, GoRepo } from 'react-icons/go';
+import { SEO, Table } from '../components';
 import { isCommit, isContributor, isPullRequest, isRepo } from '../types/types';
 import { getUserAuth, handleAuthRedirect, useFetchData } from '../utils';
 
-interface IProps {
-  githubLogin: string;
-}
+export default function Repositories() {
+  const [selectedRepoId, setSelectedRepoId] = useState(0);
+  const repoState = { selectedRepoId, setSelectedRepoId };
 
-export default function Repositories({ githubLogin }: IProps) {
   // language data fetching
   const {
     error: reposError,
@@ -65,54 +65,48 @@ export default function Repositories({ githubLogin }: IProps) {
   });
 
   useEffect(() => {
-    async function fetchData() {
-      await reposFetchData({
-        endpoint: `/api/repositories`,
-      });
+    if (!selectedRepoId) return;
+    async function clickHandler() {
+      await Promise.all([
+        await languagesFetchData({
+          endpoint: `/api/repositories/languages/${selectedRepoId}`,
+        }),
+        await contributorsFetchData({
+          endpoint: `/api/repositories/contributors/${selectedRepoId}`,
+        }),
+        await prsFetchData({
+          endpoint: `/api/repositories/prs/${selectedRepoId}`,
+        }),
+        await commitsFetchData({
+          endpoint: `/api/repositories/commits/${selectedRepoId}/1`,
+        }),
+      ]);
     }
-    fetchData();
-  }, []);
 
-  async function clickHandler({ id }: { id: number }) {
-    await Promise.all([
-      await languagesFetchData({
-        endpoint: `/api/repositories/languages/${id}`,
-      }),
-      await contributorsFetchData({
-        endpoint: `/api/repositories/contributors/${id}`,
-      }),
-      await prsFetchData({
-        endpoint: `/api/repositories/prs/${id}`,
-      }),
-      await commitsFetchData({
-        endpoint: `/api/repositories/commits/${id}`,
-      }),
-    ]);
-  }
+    clickHandler();
+  }, [selectedRepoId]);
 
   return (
-    <div>
-      <h1 className="text-3xl font-heading font-bold underline text-brand">
-        Your Repositories
-      </h1>
-      {reposData &&
-        isRepo(reposData) &&
-        reposData.map(({ name, createdAt, pushedAt, url, id }: Repository) => (
-          <button
-            key={name}
-            className="flex flex-row gap-8"
-            type="button"
-            onClick={() => clickHandler({ id })}
-          >
-            <p>{id}</p>
-            <p>{name}</p>
-            <p>{createdAt}</p>
-            <p>{pushedAt}</p>
-            <a href={url}>GitHub Link</a>
-          </button>
-        ))}
-
-      <h2 className="text-2xl font-heading font-bold underline text-brand">
+    <>
+      <SEO
+        metaTitle="Repositories"
+        metaDescription="See all your GitHub repositories easier than ever."
+      />
+      <h1 className="text-4xl font-heading mb-6">Your Repositories</h1>
+      <Table
+        headings={['Repo Name', 'Created', 'Last Updated', '🔗', 'Select']}
+        data={reposData && isRepo(reposData) ? reposData : null}
+        tableHeaderData={{
+          heading: 'Your Repositories',
+          description: 'Overview of your repositories',
+          icon: <GoRepo size="20px" />,
+        }}
+        dataFetch={reposFetchData}
+        type="repositories"
+        loading={reposLoading}
+        repoState={repoState}
+      />
+      {/* <h2 className="text-2xl font-heading font-bold underline text-brand">
         Contributions
       </h2>
       {contributorsData && isContributor(contributorsData)
@@ -137,22 +131,27 @@ export default function Repositories({ githubLogin }: IProps) {
       </h2>
       {prsData && Object.keys(prsData)?.length && isPullRequest(prsData)
         ? prsData.slice(0, 10).map((pr) => <p key={pr.id}>{pr.title}</p>)
-        : null}
+        : null} */}
 
-      <h2 className="text-2xl font-heading font-bold underline text-brand">
-        Commits
-      </h2>
-      {commitsData && Object.keys(commitsData)?.length && isCommit(commitsData)
-        ? commitsData
-            .slice(0, 10)
-            .map((commit) => <p key={commit.id}>{commit.sha}</p>)
-        : null}
-    </div>
+      <Table
+        headings={['Commit SHA', 'Repository', 'Commit Date', 'Changes', '🔗']}
+        data={commitsData && isCommit(commitsData) ? commitsData : null}
+        tableHeaderData={{
+          heading: 'Repository Commits Breakdown',
+          description: 'The details behind this repositories commits',
+          icon: <GoGitCommit size="25px" />,
+        }}
+        dataFetch={commitsFetchData}
+        type="commits"
+        loading={commitsLoading}
+        repoState={repoState}
+      />
+    </>
   );
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { session, redirect } = await handleAuthRedirect({
+  const { redirect } = await handleAuthRedirect({
     context,
     path: context?.resolvedUrl,
   });
@@ -161,9 +160,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     return { redirect };
   }
 
-  const { login } = await getUserAuth({ session });
-
   return {
-    props: { githubLogin: login },
+    props: {},
   };
 };

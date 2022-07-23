@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from 'next-auth/react';
 import { prisma } from '../../../../lib/prisma';
+import { getLastFetchDate } from '../../../../utils';
 
 export default async function lanaguges(
   req: NextApiRequest,
@@ -15,14 +16,17 @@ export default async function lanaguges(
   switch (req.method) {
     case 'GET':
       try {
+        // Get the repoid from the query
         const { repoId: id } = req.query;
 
+        // If the id is an array or undefined, return with an error
         if (Array.isArray(id) || id === undefined) {
           return res.status(500).json({
             error: 'Query parameter is not the expected type of "string"',
           });
         }
 
+        // Fetch the language data from Prisma for the repo
         const langData = await prisma?.repository.findUnique({
           where: {
             id: parseInt(id),

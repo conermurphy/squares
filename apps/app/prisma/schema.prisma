@@ -38,16 +38,17 @@ model Session {
 }
 
 model User {
-  id             String           @id @default(cuid())
-  name           String?
-  email          String?          @unique
-  emailVerified  DateTime?
-  image          String?
-  accounts       Account[]
-  sessions       Session[]
-  repositories   Repository[]
-  commits        Commit[]
-  lastFetchDates LastFetchDates[]
+  id                    String       @id @default(cuid())
+  name                  String?
+  email                 String?      @unique
+  emailVerified         DateTime?
+  image                 String?
+  languages             String       @default("")
+  lastFetchRepositories String       @default("")
+  accounts              Account[]
+  sessions              Session[]
+  repositories          Repository[]
+  commits               Commit[]
 }
 
 model VerificationToken {
@@ -59,36 +60,48 @@ model VerificationToken {
 }
 
 model Commit {
-  id           String     @id
-  sha          String     @default("some SHA")
-  message      String     @default("some Message") @db.Text
-  commitDate   String
-  url          String
-  Repository   Repository @relation(fields: [repositoryId], references: [id])
-  repositoryId Int
-  User         User?      @relation(fields: [userId], references: [id])
-  userId       String?
-  additions    Int
-  deletions    Int
+  id             String        @id
+  sha            String        @default("some SHA")
+  message        String        @default("some Message") @db.Text
+  commitDate     DateTime
+  url            String
+  repository     Repository    @relation(fields: [repositoryId], references: [id])
+  repositoryId   Int
+  User           User?         @relation(fields: [userId], references: [id])
+  userId         String?
+  additions      Int
+  deletions      Int
+  commitAuthor   CommitAuthor? @relation(fields: [commitAuthorId], references: [id])
+  commitAuthorId Int?
+}
+
+model CommitAuthor {
+  id       Int      @id
+  login    String   @default("")
+  nodeId   String   @default("")
+  imageUrl String   @default("")
+  url      String   @default("")
+  commits  Commit[]
 }
 
 model Repository {
-  id            Int           @id
-  nodeId        String
-  name          String        @default("")
-  url           String
-  watchersCount Int           @default(0)
-  forksCount    Int           @default(0)
-  createdAt     String?
-  updatedAt     String?
-  pushedAt      String?
-  starsCount    Int           @default(0)
-  owner         User          @relation(fields: [userId], references: [id])
-  userId        String
-  languages     Json
-  commits       Commit[]
-  contributors  Contributor[]
-  pullRequests  PullRequest[]
+  id             Int              @id
+  nodeId         String
+  name           String           @default("")
+  url            String
+  watchersCount  Int              @default(0)
+  forksCount     Int              @default(0)
+  createdAt      DateTime
+  updatedAt      DateTime
+  pushedAt       DateTime
+  starsCount     Int              @default(0)
+  owner          User             @relation(fields: [userId], references: [id])
+  userId         String
+  languages      Json
+  commits        Commit[]
+  contributors   Contributor[]
+  pullRequests   PullRequest[]
+  lastFetchDates LastFetchDates[]
 }
 
 model Contributor {
@@ -113,10 +126,9 @@ model PullRequest {
 }
 
 model LastFetchDates {
-  userId      String @id
-  user        User   @relation(fields: [userId], references: [id])
-  repository  String @default("")
-  commit      String @default("")
-  pullRequest String @default("")
-  contributor String @default("")
+  commits      String      @default("")
+  pullRequests String      @default("")
+  contributors String      @default("")
+  repositoryId Int         @id
+  Repository   Repository? @relation(fields: [repositoryId], references: [id])
 }

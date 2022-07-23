@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from 'next-auth/react';
 import { prisma } from '../../../../lib/prisma';
-import { getUserAuth } from '../../../../utils';
+import { getLastFetchDate, getUserAuth } from '../../../../utils';
 
 export default async function contributors(
   req: NextApiRequest,
@@ -26,64 +26,68 @@ export default async function contributors(
           });
         }
 
-        const repoData = await prisma?.repository.findUnique({
-          where: {
-            id: parseInt(id),
-          },
-          select: {
-            name: true,
-          },
-        });
+        // Check if we should fetch new data from GitHub or return existing from Prisma/PlanetScale
+        const { shouldFetchNewData, updateLastFetchDate } =
+          await getLastFetchDate({
+            repoId: id,
+            fetchType: 'repositories',
+            dataType: 'contributors',
+          });
 
-        // Get a repos contributors
-        const { data } = await octokit.rest.repos.listContributors({
-          owner: login,
-          repo: repoData?.name || '',
-          per_page: 100,
-        });
+        // If shouldFetchNewData === false, return existing from Prisma
+        if (shouldFetchNewData) {
+          const repoData = await prisma?.repository.findUnique({
+            where: {
+              id: parseInt(id),
+            },
+            select: {
+              name: true,
+            },
+          });
 
-        const transformedContributors = data.map(
-          ({
-            id: contributorId = 0,
-            node_id: nodeId = '',
-            login: contributorLogin = '',
-            avatar_url: imageUrl = '',
-            html_url: url = '',
-            contributions,
-          }) => ({
-            id: contributorId,
-            nodeId,
-            login: contributorLogin,
-            imageUrl,
-            contributions,
-            url,
-          })
-        );
+          const transformedContributors = await octokit.paginate(
+            octokit.rest.repos.listContributors,
+            {
+              owner: login,
+              repo: repoData?.name || '',
+              per_page: 100,
+            },
+            (response) =>
+              response.data.map((contributor) => ({
+                id: contributor.id || 0,
+                nodeId: contributor.node_id || '',
+                login: contributor.login || '',
+                imageUrl: contributor.avatar_url || '',
+                contributions: contributor.contributions,
+                url: contributor.html_url || '',
+              }))
+          );
 
-        await Promise.all(
-          transformedContributors.map(async (contributor) => {
-            await prisma.repository.update({
-              where: {
-                id: parseInt(id),
-              },
-              data: {
-                contributors: {
-                  connectOrCreate: {
-                    where: {
-                      id: contributor.id,
-                    },
-                    create: {
-                      ...contributor,
+          await Promise.all(
+            transformedContributors.map(async (contributor) => {
+              await prisma.repository.update({
+                where: {
+                  id: parseInt(id),
+                },
+                data: {
+                  contributors: {
+                    connectOrCreate: {
+                      where: {
+                        id: contributor.id,
+                      },
+                      create: {
+                        ...contributor,
+                      },
                     },
                   },
                 },
-              },
-              select: {
-                contributors: true,
-              },
-            });
-          })
-        );
+                select: {
+                  contributors: true,
+                },
+              });
+            })
+          );
+        }
 
         const contributorsData = await prisma.repository.findUnique({
           where: {
@@ -94,9 +98,12 @@ export default async function contributors(
           },
         });
 
+        // Update the lastFetchData for the repo's contributors
+        await updateLastFetchDate;
+
         return res.status(200).json(contributorsData?.contributors);
       } catch (e) {
-        return res.status(500).json({ error: 'Error fetching languages' });
+        return res.status(500).json({ error: 'Error fetching contributors' });
       }
     default:
       res.setHeader('Allow', ['GET']);

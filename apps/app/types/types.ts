@@ -31,11 +31,28 @@ export type DataHelper = {
   fetchData: ({ endpoint }: { endpoint: string }) => Promise<void>;
 };
 
+export type StatTypes =
+  | 'commits'
+  | 'pullRequests'
+  | 'contributors'
+  | 'forks'
+  | 'stars'
+  | 'watchers';
+
+export type Statistics = {
+  [key in StatTypes]: number;
+};
+
+export interface StatGridProps {
+  data: Statistics;
+}
+
 export type ReturnDataType =
   | Contributor[]
   | PullRequest[]
   | CommitWithRepository[]
   | Repository[]
+  | Statistics
   | ErrorMessage
   | UserSidebar;
 

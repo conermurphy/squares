@@ -12,6 +12,7 @@ type ProviderProps = { children: ReactNode };
 type RepoData = {
   totalRepos: number;
   selectedRepoId: number;
+  selectedRepoName: string;
   totalRepoCommits: number;
 };
 type ContextProps = {
@@ -20,7 +21,12 @@ type ContextProps = {
 };
 
 const RepositoryContext = createContext<ContextProps>({
-  repoData: { totalRepos: 0, selectedRepoId: 0, totalRepoCommits: 0 },
+  repoData: {
+    totalRepos: 0,
+    selectedRepoId: 0,
+    selectedRepoName: '',
+    totalRepoCommits: 0,
+  },
   setRepoData() {},
 });
 
@@ -28,6 +34,7 @@ function RepositoryProvider({ children }: ProviderProps) {
   const [repoData, setRepoData] = useState({
     totalRepos: 0,
     selectedRepoId: 0,
+    selectedRepoName: '',
     totalRepoCommits: 0,
   });
 

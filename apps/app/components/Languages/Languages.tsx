@@ -65,11 +65,14 @@ export default function Languages({ dataHelper, headerData }: IProps) {
     <section className={!selectedRepoId ? 'opacity-50' : ''}>
       <DataSectionHeader {...headerData} />
       <div
-        className={`flex flex-col gap-3 w-full border border-tableBorder rounded-b-2xl border-t-0 px-10 py-7 min-h-[429px] ${
-          !selectedRepoId ? 'items-center justify-center' : ''
+        className={`flex flex-col gap-3 w-full border border-tableBorder rounded-b-2xl border-t-0 px-10 py-7 min-h-[489px] ${
+          !selectedRepoId ||
+          (languagesData && !Object.keys(languagesData)?.length)
+            ? 'items-center justify-center'
+            : ''
         }`}
       >
-        {/* If data is not loading and no repository is selected, prompt the user to select one */}
+        {/* If no repository is selected, prompt the user to select one */}
         {!selectedRepoId ? (
           <div className="flex flex-col items-center justify-center gap-4 w-full">
             <div className="rounded-full bg-accent p-4">
@@ -77,6 +80,21 @@ export default function Languages({ dataHelper, headerData }: IProps) {
             </div>
             <p className="font-heading text-2xl">
               Please select a repository to look up.
+            </p>
+          </div>
+        ) : null}
+
+        {/* If selected repo and no data and not loading, inform the user */}
+        {selectedRepoId &&
+        !loading &&
+        languagesData &&
+        !Object.keys(languagesData)?.length ? (
+          <div className="flex flex-col items-center justify-center gap-4 w-full">
+            <div className="rounded-full bg-accent p-4">
+              <GoInfo size="35px" />
+            </div>
+            <p className="font-heading text-2xl">
+              No languages data found for this repository.
             </p>
           </div>
         ) : null}

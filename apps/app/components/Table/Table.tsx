@@ -18,24 +18,22 @@ import { TablePagination } from './components';
 
 interface IProps {
   headings: string[];
-  data: DataHelper['data'];
   tableHeaderData: DataSectionHeaderProps;
-  dataFetch: DataHelper['fetchData'];
   type: 'repositories' | 'commits';
-  loading: boolean;
+  dataHelper: DataHelper;
 }
 
 export default function Table({
   headings,
-  data,
   tableHeaderData,
-  dataFetch,
+  dataHelper,
   type,
-  loading = false,
 }: IProps) {
   const borderClasses = 'border-b border-tableBorder';
 
   const { setRepoData, repoData } = useRepository();
+
+  const { loading, data } = dataHelper;
 
   return (
     <section
@@ -179,6 +177,7 @@ export default function Table({
                           setRepoData({
                             ...repoData,
                             selectedRepoId: row.id,
+                            selectedRepoName: row.name,
                           })
                         }
                       >
@@ -234,7 +233,7 @@ export default function Table({
             ))}
         </tbody>
       </table>
-      <TablePagination dataFetch={dataFetch} type={type} />
+      <TablePagination dataFetch={dataHelper.fetchData} type={type} />
     </section>
   );
 }

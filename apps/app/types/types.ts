@@ -26,8 +26,8 @@ export interface DataSectionHeaderProps {
 export type ReturnDataType =
   | Contributor[]
   | PullRequest[]
-  | [number, CommitWithRepository[]]
-  | [number, Repository[]]
+  | CommitWithRepository[]
+  | Repository[]
   | ErrorMessage
   | UserSidebar;
 
@@ -39,14 +39,12 @@ export function isContributor(data: ReturnDataType): data is Contributor[] {
   return (data as Contributor[])[0].contributions !== undefined;
 }
 
-export function isCommit(
-  data: ReturnDataType
-): data is [number, CommitWithRepository[]] {
-  return (data as [number, CommitWithRepository[]])[1][0].sha !== undefined;
+export function isCommit(data: ReturnDataType): data is CommitWithRepository[] {
+  return (data as CommitWithRepository[])[0].sha !== undefined;
 }
 
-export function isRepo(data: ReturnDataType): data is [number, Repository[]] {
-  return (data as [number, Repository[]])[1][0].forksCount !== undefined;
+export function isRepo(data: ReturnDataType): data is Repository[] {
+  return (data as Repository[])[0].forksCount !== undefined;
 }
 
 export function isUserSidebar(data: ReturnDataType): data is UserSidebar {

@@ -2,82 +2,44 @@ import { GetServerSideProps } from 'next';
 import { useEffect, useState } from 'react';
 import { GoGitCommit, GoRepo } from 'react-icons/go';
 import { SEO, Table } from '../components';
-import { isCommit, isContributor, isPullRequest, isRepo } from '../types/types';
-import { getUserAuth, handleAuthRedirect, useFetchData } from '../utils';
+import { handleAuthRedirect, useFetchData } from '../utils';
 
 export default function Repositories() {
   const [selectedRepoId, setSelectedRepoId] = useState(0);
   const repoState = { selectedRepoId, setSelectedRepoId };
 
-  // language data fetching
-  const {
-    error: reposError,
-    loading: reposLoading,
-    data: reposData,
-    message: reposMessage,
-    fetchData: reposFetchData,
-  } = useFetchData({
-    method: 'GET',
-  });
-
-  // language data fetching
-  const {
-    error: languagesError,
-    loading: languagesLoading,
-    data: languagesData,
-    message: languagesMessage,
-    fetchData: languagesFetchData,
-  } = useFetchData({
-    method: 'GET',
-  });
-
-  // contributors data fetching
-  const {
-    error: contributorsError,
-    loading: contributorsLoading,
-    data: contributorsData,
-    message: contributorsMessage,
-    fetchData: contributorsFetchData,
-  } = useFetchData({
-    method: 'GET',
-  });
-
-  // PRs data fetching
-  const {
-    error: prsError,
-    loading: prsLoading,
-    data: prsData,
-    message: prsMessage,
-    fetchData: prsFetchData,
-  } = useFetchData({
-    method: 'GET',
-  });
-
-  // Commits data fetching
-  const {
-    error: commitsError,
-    loading: commitsLoading,
-    data: commitsData,
-    message: commitsMessage,
-    fetchData: commitsFetchData,
-  } = useFetchData({
-    method: 'GET',
-  });
+  const dataHelper = {
+    commits: useFetchData({
+      method: 'GET',
+    }),
+    prs: useFetchData({
+      method: 'GET',
+    }),
+    languages: useFetchData({
+      method: 'GET',
+    }),
+    repos: useFetchData({
+      method: 'GET',
+    }),
+    contributors: useFetchData({
+      method: 'GET',
+    }),
+  };
 
   useEffect(() => {
     if (!selectedRepoId) return;
     async function clickHandler() {
       await Promise.all([
-        await languagesFetchData({
+        await dataHelper.languages.fetchData({
           endpoint: `/api/repositories/languages/${selectedRepoId}`,
         }),
-        await contributorsFetchData({
+        await dataHelper.contributors.fetchData({
           endpoint: `/api/repositories/contributors/${selectedRepoId}`,
         }),
-        await prsFetchData({
+        await dataHelper.prs.fetchData({
           endpoint: `/api/repositories/prs/${selectedRepoId}`,
         }),
-        await commitsFetchData({
+        await dataHelper.commits.fetchData({
           endpoint: `/api/repositories/commits/${selectedRepoId}/1`,
         }),
       ]);
@@ -94,16 +56,16 @@ export default function Repositories() {
       />
       <h1 className="text-4xl font-heading mb-6">Your Repositories</h1>
       <Table
-        headings={['Repo Name', 'Created', 'Last Updated', '🔗', 'Select']}
-        data={reposData && isRepo(reposData) ? reposData : null}
+        headings={['Repo Name', 'Created', 'Last Updated', '🔗', '✅']}
+        data={dataHelper.repos.data || null}
         tableHeaderData={{
           heading: 'Your Repositories',
           description: 'Overview of your repositories',
           icon: <GoRepo size="20px" />,
         }}
-        dataFetch={reposFetchData}
+        dataFetch={dataHelper.repos.fetchData}
         type="repositories"
-        loading={reposLoading}
+        loading={dataHelper.repos.loading}
         repoState={repoState}
       />
       {/* <h2 className="text-2xl font-heading font-bold underline text-brand">
@@ -135,15 +97,15 @@ export default function Repositories() {
 
       <Table
         headings={['Commit SHA', 'Repository', 'Commit Date', 'Changes', '🔗']}
-        data={commitsData && isCommit(commitsData) ? commitsData : null}
+        data={dataHelper.commits.data || null}
         tableHeaderData={{
           heading: 'Repository Commits Breakdown',
           description: 'The details behind this repositories commits',
           icon: <GoGitCommit size="25px" />,
         }}
-        dataFetch={commitsFetchData}
+        dataFetch={dataHelper.commits.fetchData}
         type="commits"
-        loading={commitsLoading}
+        loading={dataHelper.commits.loading}
         repoState={repoState}
       />
     </>

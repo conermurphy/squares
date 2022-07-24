@@ -92,21 +92,18 @@ export default async function repos(req: NextApiRequest, res: NextApiResponse) {
         }
 
         // Return all of the repo data from Prisma for the user
-        const repoData = await prisma.$transaction([
-          prisma.repository.count({ where: { userId } }),
-          prisma?.repository.findMany({
-            where: {
-              userId,
-            },
-            orderBy: {
-              pushedAt: 'desc',
-            },
-            skip:
-              (parseInt(pageNum) - 1) *
-              parseInt(process.env.NEXT_PUBLIC_RESULTS_PER_PAGE),
-            take: parseInt(process.env.NEXT_PUBLIC_RESULTS_PER_PAGE),
-          }),
-        ]);
+        const repoData = await prisma?.repository.findMany({
+          where: {
+            userId,
+          },
+          orderBy: {
+            pushedAt: 'desc',
+          },
+          skip:
+            (parseInt(pageNum) - 1) *
+            parseInt(process.env.NEXT_PUBLIC_RESULTS_PER_PAGE),
+          take: parseInt(process.env.NEXT_PUBLIC_RESULTS_PER_PAGE),
+        });
 
         // Update the lastFetchData for the user's repositories
         await updateLastFetchDate;

@@ -135,24 +135,21 @@ export default async function commits(
           );
         }
 
-        const commitData = await prisma.$transaction([
-          prisma.commit.count({ where: { repositoryId: parseInt(id) } }),
-          prisma.commit.findMany({
-            where: {
-              repositoryId: parseInt(id),
-            },
-            orderBy: {
-              commitDate: 'desc',
-            },
-            include: {
-              repository: true,
-            },
-            skip:
-              (parseInt(pageNumber) - 1) *
-              parseInt(process.env.NEXT_PUBLIC_RESULTS_PER_PAGE),
-            take: parseInt(process.env.NEXT_PUBLIC_RESULTS_PER_PAGE),
-          }),
-        ]);
+        const commitData = await prisma.commit.findMany({
+          where: {
+            repositoryId: parseInt(id),
+          },
+          orderBy: {
+            commitDate: 'desc',
+          },
+          include: {
+            repository: true,
+          },
+          skip:
+            (parseInt(pageNumber) - 1) *
+            parseInt(process.env.NEXT_PUBLIC_RESULTS_PER_PAGE),
+          take: parseInt(process.env.NEXT_PUBLIC_RESULTS_PER_PAGE),
+        });
 
         // Update the lastFetchData for the repo's commits
         await updateLastFetchDate;

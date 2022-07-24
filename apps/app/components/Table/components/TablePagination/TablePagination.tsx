@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useRepository } from '../../../../contexts';
+import { DataHelper } from '../../../../types/types';
 import { useDataLengths } from '../../../../utils';
 
 interface IProps {
-  dataFetch: ({ endpoint }: { endpoint: string }) => Promise<void>;
+  dataFetch: DataHelper['fetchData'];
   type: 'repositories' | 'commits';
 }
 

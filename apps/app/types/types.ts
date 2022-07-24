@@ -23,6 +23,14 @@ export interface DataSectionHeaderProps {
   icon: ReactNode;
 }
 
+export type DataHelper = {
+  error: boolean | null | undefined;
+  loading: boolean;
+  data: number | ReturnDataType | null | undefined;
+  message: string | null;
+  fetchData: ({ endpoint }: { endpoint: string }) => Promise<void>;
+};
+
 export type ReturnDataType =
   | Contributor[]
   | PullRequest[]

@@ -26,7 +26,7 @@ export default function UserAccount() {
 
   return (
     <div className="flex flex-row gap-3 items-center pt-6">
-      {usersData && isUserSidebar(usersData) && (
+      {usersData && typeof usersData !== 'number' && isUserSidebar(usersData) && (
         <>
           <div className="relative w-10 h-10 rounded-lg overflow-hidden">
             <Img src={usersData.image} layout="fill" />

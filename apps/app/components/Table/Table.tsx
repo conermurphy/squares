@@ -7,20 +7,20 @@ import {
 } from 'react-icons/go';
 import { useRepository } from '../../contexts';
 import {
+  DataHelper,
   DataSectionHeaderProps,
   isCommit,
   isRepo,
   isRowCommit,
-  ReturnDataType,
 } from '../../types/types';
 import DataSectionHeader from '../DataSectionHeader/DataSectionHeader';
 import { TablePagination } from './components';
 
 interface IProps {
   headings: string[];
-  data: ReturnDataType | number | null;
+  data: DataHelper['data'];
   tableHeaderData: DataSectionHeaderProps;
-  dataFetch: ({ endpoint }: { endpoint: string }) => Promise<void>;
+  dataFetch: DataHelper['fetchData'];
   type: 'repositories' | 'commits';
   loading: boolean;
 }
@@ -38,7 +38,11 @@ export default function Table({
   const { setRepoData, repoData } = useRepository();
 
   return (
-    <section>
+    <section
+      className={
+        !repoData.selectedRepoId && type === 'commits' ? 'opacity-50' : ''
+      }
+    >
       <DataSectionHeader {...tableHeaderData} />
       <table className="table-fixed w-full border border-tableBorder">
         <thead
@@ -154,9 +158,15 @@ export default function Table({
                     </td>
                   ) : null}
                   <td className={borderClasses}>
-                    <a href={row.url} target="_blank" rel="noopener noreferrer">
-                      <GoMarkGithub size="23px" />
-                    </a>
+                    <div className="w-fit">
+                      <a
+                        href={row.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <GoMarkGithub size="23px" />
+                      </a>
+                    </div>
                   </td>
                   {!isRowDataCommit ? (
                     <td className={borderClasses}>

@@ -1,12 +1,12 @@
 import { GetServerSideProps } from 'next';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { GoGitCommit, GoRepo } from 'react-icons/go';
 import { SEO, Table } from '../components';
+import { useRepository } from '../contexts';
 import { handleAuthRedirect, useFetchData } from '../utils';
 
 export default function Repositories() {
-  const [selectedRepoId, setSelectedRepoId] = useState(0);
-  const repoState = { selectedRepoId, setSelectedRepoId };
+  const { repoData } = useRepository();
 
   const dataHelper = {
     commits: useFetchData({
@@ -27,26 +27,23 @@ export default function Repositories() {
   };
 
   useEffect(() => {
-    if (!selectedRepoId) return;
+    if (!repoData.selectedRepoId) return;
     async function clickHandler() {
       await Promise.all([
         await dataHelper.languages.fetchData({
-          endpoint: `/api/repositories/languages/${selectedRepoId}`,
+          endpoint: `/api/repositories/languages/${repoData.selectedRepoId}`,
         }),
         await dataHelper.contributors.fetchData({
-          endpoint: `/api/repositories/contributors/${selectedRepoId}`,
+          endpoint: `/api/repositories/contributors/${repoData.selectedRepoId}`,
         }),
         await dataHelper.prs.fetchData({
-          endpoint: `/api/repositories/prs/${selectedRepoId}`,
-        }),
-        await dataHelper.commits.fetchData({
-          endpoint: `/api/repositories/commits/${selectedRepoId}/1`,
+          endpoint: `/api/repositories/prs/${repoData.selectedRepoId}`,
         }),
       ]);
     }
 
     clickHandler();
-  }, [selectedRepoId]);
+  }, [repoData]);
 
   return (
     <>
@@ -66,7 +63,6 @@ export default function Repositories() {
         dataFetch={dataHelper.repos.fetchData}
         type="repositories"
         loading={dataHelper.repos.loading}
-        repoState={repoState}
       />
       {/* <h2 className="text-2xl font-heading font-bold underline text-brand">
         Contributions
@@ -106,7 +102,6 @@ export default function Repositories() {
         dataFetch={dataHelper.commits.fetchData}
         type="commits"
         loading={dataHelper.commits.loading}
-        repoState={repoState}
       />
     </>
   );

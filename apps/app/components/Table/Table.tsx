@@ -1,10 +1,11 @@
-import React, { Dispatch, SetStateAction } from 'react';
+import React from 'react';
 import {
   GoMarkGithub,
   GoDiffAdded,
   GoDiffRemoved,
   GoInfo,
 } from 'react-icons/go';
+import { useRepository } from '../../contexts';
 import {
   DataSectionHeaderProps,
   isCommit,
@@ -17,15 +18,11 @@ import { TablePagination } from './components';
 
 interface IProps {
   headings: string[];
-  data: ReturnDataType | null;
+  data: ReturnDataType | number | null;
   tableHeaderData: DataSectionHeaderProps;
   dataFetch: ({ endpoint }: { endpoint: string }) => Promise<void>;
   type: 'repositories' | 'commits';
   loading: boolean;
-  repoState: {
-    selectedRepoId: number;
-    setSelectedRepoId: Dispatch<SetStateAction<number>>;
-  };
 }
 
 export default function Table({
@@ -35,9 +32,10 @@ export default function Table({
   dataFetch,
   type,
   loading = false,
-  repoState,
 }: IProps) {
   const borderClasses = 'border-b border-tableBorder';
+
+  const { setRepoData, repoData } = useRepository();
 
   return (
     <section>
@@ -61,7 +59,7 @@ export default function Table({
             ) : null}
 
             {/* If loading or there is data, show the headings passed in */}
-            {(data || loading) && Array.isArray(data) && data?.length
+            {(data && Array.isArray(data) && data?.length) || loading
               ? headings.map((heading, i, arr) => (
                   <th
                     key={`${heading}-${i}`}
@@ -165,9 +163,14 @@ export default function Table({
                       <button
                         type="button"
                         className={`border border-text px-4 py-2 rounded text-xs ${
-                          row.id === repoState.selectedRepoId ? 'bg-accent' : ''
+                          row.id === repoData.selectedRepoId ? 'bg-accent' : ''
                         }`}
-                        onClick={() => repoState.setSelectedRepoId(row.id)}
+                        onClick={() =>
+                          setRepoData({
+                            ...repoData,
+                            selectedRepoId: row.id,
+                          })
+                        }
                       >
                         Select
                       </button>
@@ -221,12 +224,7 @@ export default function Table({
             ))}
         </tbody>
       </table>
-      <TablePagination
-        dataFetch={dataFetch}
-        dataLength={0}
-        type={type}
-        repoState={repoState}
-      />
+      <TablePagination dataFetch={dataFetch} type={type} />
     </section>
   );
 }

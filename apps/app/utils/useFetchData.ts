@@ -13,7 +13,7 @@ function isError(data: ReturnDataType): data is ErrorMessage {
 export default function useFetchData({ method }: FetchDataProps) {
   // Setting state to be returned depending on the outcome of the submission.
   const [loading, setLoading] = useState<boolean>(false);
-  const [data, setData] = useState<ReturnDataType | null>();
+  const [data, setData] = useState<ReturnDataType | number | null>();
   const [message, setMessage] = useState<string | null>('');
   const [error, setError] = useState<boolean | null>();
 

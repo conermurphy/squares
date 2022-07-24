@@ -1,22 +1,23 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useRepository } from '../../../../contexts';
+import { useDataLengths } from '../../../../utils';
 
 interface IProps {
   dataFetch: ({ endpoint }: { endpoint: string }) => Promise<void>;
-  dataLength: number;
   type: 'repositories' | 'commits';
-  repoState: {
-    selectedRepoId: number;
-    setSelectedRepoId: Dispatch<SetStateAction<number>>;
-  };
 }
 
 export default function TablePagination({
   dataFetch,
-  dataLength,
   type,
-  repoState,
 }: IProps): JSX.Element {
   const [pageNumber, setPageNumber] = useState(1);
+
+  const { repoData } = useRepository();
+
+  const { reposLength, commitsLength } = useDataLengths();
+
+  const dataLength = type === 'repositories' ? reposLength : commitsLength;
 
   const totalPages = Math.round(
     dataLength / parseInt(process.env.NEXT_PUBLIC_RESULTS_PER_PAGE)
@@ -27,16 +28,28 @@ export default function TablePagination({
       if (type === 'repositories') {
         await dataFetch({ endpoint: `/api/repositories/${pageNumber}` });
       }
+    };
 
-      if (type === 'commits' && repoState.selectedRepoId) {
+    fetchData();
+  }, [pageNumber]);
+
+  useEffect(() => {
+    if (type === 'commits') {
+      setPageNumber(1);
+    }
+  }, [repoData.selectedRepoId]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (type === 'commits' && repoData.selectedRepoId) {
         await dataFetch({
-          endpoint: `/api/repositories/commits/${repoState.selectedRepoId}/${pageNumber}`,
+          endpoint: `/api/repositories/commits/${repoData.selectedRepoId}/${pageNumber}`,
         });
       }
     };
 
     fetchData();
-  }, [pageNumber]);
+  }, [pageNumber, repoData.selectedRepoId]);
 
   const buttonStyles =
     'border border-text px-4 py-2 rounded text-sm disabled:opacity-50 disabled:cursor-not-allowed';
@@ -53,7 +66,9 @@ export default function TablePagination({
       >
         Previous
       </button>
-      <p className="opacity-75">{`Page ${pageNumber} of ${totalPages}`}</p>
+      {(totalPages && type === 'commits') || type === 'repositories' ? (
+        <p className="opacity-75">{`Page ${pageNumber} of ${totalPages}`}</p>
+      ) : null}
       <button
         type="button"
         className={buttonStyles}

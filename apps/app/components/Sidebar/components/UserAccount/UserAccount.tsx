@@ -42,7 +42,7 @@ export default function UserAccount() {
 
       {usersLoading && (
         <>
-          <div className="w-10 h-10 bg-text rounded-lg" />
+          <div className="w-10 h-10 bg-text rounded-lg opacity-25 animate-pulse" />
           <div>
             <p className="hidden lg:block font-heading">Name</p>
             <p className="hidden lg:block text-sm max-w-[130px] text-ellipsis overflow-hidden">

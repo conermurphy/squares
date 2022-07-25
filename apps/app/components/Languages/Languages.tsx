@@ -1,9 +1,11 @@
-import React, { useEffect } from 'react';
-import { GoInfo } from 'react-icons/go';
-import { DataHelper, DataSectionHeaderProps } from '@/types/types';
-import { useRepository } from '@/contexts';
-import DataSectionHeader from '../DataSectionHeader/DataSectionHeader';
-import languageColours from '../../assets/languageColours.json';
+import React, { useEffect } from "react";
+import { GoInfo } from "react-icons/go";
+import { DataHelper, DataSectionHeaderProps } from "@/types/types";
+import { useRepository } from "@/contexts";
+import DataSectionHeader from "../DataSectionHeader/DataSectionHeader";
+import languageColours from "../../assets/languageColours.json";
+import SelectRepository from "../SkeletonComponents/SelectRepository";
+import NoDataFound from "../SkeletonComponents/NoDataFound";
 
 interface IProps {
   dataHelper: DataHelper;
@@ -63,42 +65,26 @@ export default function Languages({ dataHelper, headerData }: IProps) {
 
   return (
     <section
-      className={`mx-5 md:mx-10 lg:mx-0 ${!selectedRepoId ? 'opacity-50' : ''}`}
+      className={`mx-5 md:mx-10 lg:mx-0 ${!selectedRepoId ? "opacity-50" : ""}`}
     >
       <DataSectionHeader {...headerData} />
       <div
         className={`flex flex-col gap-3 w-full border border-tableBorder rounded-b-2xl border-t-0 px-10 py-7 min-h-[489px] ${
           !selectedRepoId ||
           (languagesData && !Object.keys(languagesData)?.length)
-            ? 'items-center justify-center'
-            : ''
+            ? "items-center justify-center"
+            : ""
         }`}
       >
         {/* If no repository is selected, prompt the user to select one */}
-        {!selectedRepoId ? (
-          <div className="flex flex-col items-center justify-center gap-4 w-full">
-            <div className="rounded-full bg-accent p-4">
-              <GoInfo size="35px" />
-            </div>
-            <p className="font-heading text-xl sm:text-2xl text-center">
-              Please select a repository to look up.
-            </p>
-          </div>
-        ) : null}
+        {!selectedRepoId ? <SelectRepository /> : null}
 
         {/* If selected repo and no data and not loading, inform the user */}
         {selectedRepoId &&
         !loading &&
         languagesData &&
         !Object.keys(languagesData)?.length ? (
-          <div className="flex flex-col items-center justify-center gap-4 w-full">
-            <div className="rounded-full bg-accent p-4">
-              <GoInfo size="35px" />
-            </div>
-            <p className="font-heading text-2xl text-center">
-              No languages data found for this repository.
-            </p>
-          </div>
+          <NoDataFound message="No languages data found for this repository." />
         ) : null}
 
         {/* If data is loading in, show a loading skeleton */}
@@ -119,7 +105,7 @@ export default function Languages({ dataHelper, headerData }: IProps) {
                         style={{
                           width: percentValue,
                           backgroundColor:
-                            languageColourData[key]?.color || 'bg-brand',
+                            languageColourData[key]?.color || "bg-brand",
                         }}
                       />
                     </div>
@@ -145,7 +131,7 @@ export default function Languages({ dataHelper, headerData }: IProps) {
                         style={{
                           width: percentValue,
                           backgroundColor:
-                            languageColourData[key]?.color || 'bg-brand',
+                            languageColourData[key]?.color || "bg-brand",
                         }}
                       />
                     </div>

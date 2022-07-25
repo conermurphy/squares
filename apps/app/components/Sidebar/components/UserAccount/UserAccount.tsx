@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
-import Img from 'next/image';
-import { useFetchData } from '@/utils';
-import { isUserSidebar } from '@/types/types';
+import React, { useEffect } from "react";
+import Img from "next/image";
+import { useFetchData } from "@/utils";
+import { isUserSidebar } from "@/types/types";
 
 export default function UserAccount() {
   // language data fetching
@@ -12,7 +12,7 @@ export default function UserAccount() {
     message: usersMessage,
     fetchData: usersFetchData,
   } = useFetchData({
-    method: 'GET',
+    method: "GET",
   });
 
   useEffect(() => {
@@ -25,8 +25,8 @@ export default function UserAccount() {
   }, []);
 
   return (
-    <div className="flex flex-row gap-3 items-center pt-6">
-      {usersData && typeof usersData !== 'number' && isUserSidebar(usersData) && (
+    <div className="flex flex-row gap-3 items-center lg:pt-6">
+      {usersData && typeof usersData !== "number" && isUserSidebar(usersData) && (
         <>
           <div className="relative w-10 h-10 rounded-lg overflow-hidden">
             <Img src={usersData.image} layout="fill" />
@@ -44,8 +44,8 @@ export default function UserAccount() {
         <>
           <div className="w-10 h-10 bg-text rounded-lg" />
           <div>
-            <p className="font-heading">Name</p>
-            <p className="text-sm max-w-[130px] text-ellipsis overflow-hidden">
+            <p className="hidden lg:block font-heading">Name</p>
+            <p className="hidden lg:block text-sm max-w-[130px] text-ellipsis overflow-hidden">
               Username
             </p>
           </div>

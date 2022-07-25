@@ -1,13 +1,13 @@
-import React, { useEffect } from 'react';
-import Img from 'next/image';
-import { GoInfo } from 'react-icons/go';
+import React, { useEffect } from "react";
+import Img from "next/image";
 import {
   DataHelper,
   DataSectionHeaderProps,
   isContributor,
-} from '@/types/types';
-import { useRepository } from '@/contexts';
-import DataSectionHeader from '../DataSectionHeader/DataSectionHeader';
+} from "@/types/types";
+import { useRepository } from "@/contexts";
+import DataSectionHeader from "../DataSectionHeader/DataSectionHeader";
+import SelectRepository from "../SkeletonComponents/SelectRepository";
 
 interface IProps {
   dataHelper: DataHelper;
@@ -34,21 +34,12 @@ export default function Contributors({ dataHelper, headerData }: IProps) {
 
   return (
     <section
-      className={`mx-5 md:mx-10 lg:mx-0 ${!selectedRepoId ? 'opacity-50' : ''}`}
+      className={`mx-5 md:mx-10 lg:mx-0 ${!selectedRepoId ? "opacity-50" : ""}`}
     >
       <DataSectionHeader {...headerData} />
       <div className="flex flex-row flex-wrap gap-3 w-full border border-tableBorder rounded-b-2xl border-t-0 px-10 py-7 min-h-[150px]">
         {/* If data is not loading and no repository is selected, prompt the user to select one */}
-        {!selectedRepoId ? (
-          <div className="flex flex-col items-center justify-center gap-4 w-full">
-            <div className="rounded-full bg-accent p-3">
-              <GoInfo size="25px" />
-            </div>
-            <p className="font-heading text-xl text-center">
-              Please select a repository to look up.
-            </p>
-          </div>
-        ) : null}
+        {!selectedRepoId ? <SelectRepository isSmall /> : null}
 
         {/* If data is loading in, show a loading skeleton */}
         {loading

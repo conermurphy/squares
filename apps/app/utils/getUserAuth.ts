@@ -1,6 +1,6 @@
 import { Session } from 'next-auth';
 import { Octokit } from 'octokit';
-import { prisma } from '../lib/prisma';
+import { prisma } from '@/lib/prisma';
 
 interface IProps {
   session: Session | null;

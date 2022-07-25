@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { useRepository } from '../../../../contexts';
-import { DataHelper } from '../../../../types/types';
-import { useDataLengths } from '../../../../utils';
+import { useDataLengths } from '@/utils';
+import { useRepository } from '@/contexts';
+import { DataHelper } from '@/types/types';
 
 interface IProps {
   dataFetch: DataHelper['fetchData'];
@@ -14,7 +14,7 @@ export default function TablePagination({
 }: IProps): JSX.Element {
   const [pageNumber, setPageNumber] = useState(1);
 
-  const { repoData } = useRepository();
+  const { repoData, setRepoData } = useRepository();
 
   const { reposLength, commitsLength } = useDataLengths();
 
@@ -43,8 +43,18 @@ export default function TablePagination({
   useEffect(() => {
     const fetchData = async () => {
       if (type === 'commits' && repoData.selectedRepoId) {
+        if (pageNumber === 1) {
+          setRepoData({
+            ...repoData,
+            repoCommitsLoading: true,
+          });
+        }
         await dataFetch({
           endpoint: `/api/repositories/commits/${repoData.selectedRepoId}/${pageNumber}`,
+        });
+        setRepoData({
+          ...repoData,
+          repoCommitsLoading: false,
         });
       }
     };
@@ -56,7 +66,7 @@ export default function TablePagination({
     'border border-text px-4 py-2 rounded text-sm disabled:opacity-50 disabled:cursor-not-allowed';
 
   return (
-    <div className="flex flex-row items-center justify-between px-10 py-4 border border-tableBorder rounded-b-2xl bg-tableAccent">
+    <div className="sticky left-0 bottom-0 flex flex-row items-center justify-between px-10 py-4 border border-tableBorder rounded-b-2xl bg-tableAccent">
       <button
         type="button"
         className={buttonStyles}
@@ -68,7 +78,7 @@ export default function TablePagination({
         Previous
       </button>
       {(totalPages && type === 'commits') || type === 'repositories' ? (
-        <p className="opacity-75">{`Page ${pageNumber} of ${totalPages}`}</p>
+        <p className="hidden md:flex opacity-75">{`Page ${pageNumber} of ${totalPages}`}</p>
       ) : null}
       <button
         type="button"

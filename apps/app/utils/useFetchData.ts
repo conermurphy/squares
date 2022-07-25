@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { server } from '../config';
-import { ErrorMessage, ReturnDataType } from '../types/types';
+import { server } from '@/config';
+import { ErrorMessage, ReturnDataType } from '@/types/types';
 
 interface FetchDataProps {
   method: 'GET' | 'POST';

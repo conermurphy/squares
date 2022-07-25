@@ -14,7 +14,9 @@ type RepoData = {
   selectedRepoId: number;
   selectedRepoName: string;
   totalRepoCommits: number;
+  repoCommitsLoading: boolean;
 };
+
 type ContextProps = {
   repoData: RepoData;
   setRepoData: Dispatch<SetStateAction<RepoData>>;
@@ -26,6 +28,7 @@ const RepositoryContext = createContext<ContextProps>({
     selectedRepoId: 0,
     selectedRepoName: '',
     totalRepoCommits: 0,
+    repoCommitsLoading: false,
   },
   setRepoData() {},
 });
@@ -36,6 +39,7 @@ function RepositoryProvider({ children }: ProviderProps) {
     selectedRepoId: 0,
     selectedRepoName: '',
     totalRepoCommits: 0,
+    repoCommitsLoading: false,
   });
 
   const value = useMemo(

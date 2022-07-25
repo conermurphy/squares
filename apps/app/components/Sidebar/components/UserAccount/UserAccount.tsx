@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import Img from 'next/image';
-import { useFetchData } from '../../../../utils';
-import { isUserSidebar } from '../../../../types/types';
+import { useFetchData } from '@/utils';
+import { isUserSidebar } from '@/types/types';
 
 export default function UserAccount() {
   // language data fetching
@@ -31,7 +31,7 @@ export default function UserAccount() {
           <div className="relative w-10 h-10 rounded-lg overflow-hidden">
             <Img src={usersData.image} layout="fill" />
           </div>
-          <div>
+          <div className="hidden xl:block">
             <p className="font-heading">{usersData.name}</p>
             <p className="text-sm max-w-[130px] text-ellipsis overflow-hidden">
               {usersData.login}

@@ -1,5 +1,5 @@
 import { LastFetchDates } from '@prisma/client';
-import { prisma } from '../lib/prisma';
+import { prisma } from '@/lib/prisma';
 
 interface IProps {
   fetchType: 'repositories' | 'user';

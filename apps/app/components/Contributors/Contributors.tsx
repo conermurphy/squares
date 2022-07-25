@@ -5,9 +5,9 @@ import {
   DataHelper,
   DataSectionHeaderProps,
   isContributor,
-} from '../../types/types';
+} from '@/types/types';
+import { useRepository } from '@/contexts';
 import DataSectionHeader from '../DataSectionHeader/DataSectionHeader';
-import { useRepository } from '../../contexts';
 
 interface IProps {
   dataHelper: DataHelper;
@@ -33,7 +33,9 @@ export default function Contributors({ dataHelper, headerData }: IProps) {
   }, [selectedRepoId]);
 
   return (
-    <section className={!selectedRepoId ? 'opacity-50' : ''}>
+    <section
+      className={`mx-5 md:mx-10 lg:mx-0 ${!selectedRepoId ? 'opacity-50' : ''}`}
+    >
       <DataSectionHeader {...headerData} />
       <div className="flex flex-row flex-wrap gap-3 w-full border border-tableBorder rounded-b-2xl border-t-0 px-10 py-7 min-h-[150px]">
         {/* If data is not loading and no repository is selected, prompt the user to select one */}
@@ -42,7 +44,7 @@ export default function Contributors({ dataHelper, headerData }: IProps) {
             <div className="rounded-full bg-accent p-3">
               <GoInfo size="25px" />
             </div>
-            <p className="font-heading text-xl">
+            <p className="font-heading text-xl text-center">
               Please select a repository to look up.
             </p>
           </div>

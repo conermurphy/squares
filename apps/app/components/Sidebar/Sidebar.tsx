@@ -7,14 +7,16 @@ import { NavLink, UserAccount } from './components';
 
 export default function Sidebar(): JSX.Element {
   return (
-    <aside className="sticky top-0 flex flex-col items-start w-72 p-10 border-r border-text h-screen">
+    <aside className="hidden sticky top-0 lg:flex flex-col items-center xl:items-start px-6 py-10 xl:p-10 border-r border-text h-screen">
       <div className="flex flex-row items-center justify-center gap-4">
         <div className="relative w-12 h-12">
           <Img src="/logo.svg" layout="fill" />
         </div>
-        <Link href="/" passHref>
-          <a className="font-heading text-2xl md:text-3xl">Squares</a>
-        </Link>
+        <div className="hidden xl:block">
+          <Link href="/" passHref>
+            <a className="font-heading text-2xl md:text-3xl">Squares</a>
+          </Link>
+        </div>
       </div>
       <nav className="flex flex-col items-start mt-9 pb-4 gap-4 h-full border-b border-text">
         <NavLink text="Dashboard" href="/" icon={<BiLineChart size="20px" />} />

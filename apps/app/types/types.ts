@@ -1,6 +1,6 @@
 import { Contributor, PullRequest, Repository } from '@prisma/client';
 import { ReactNode } from 'react';
-import { CommitWithRepository } from '../lib/prisma-types';
+import { CommitWithRepository } from '@/lib/prisma-types';
 
 export type RepoLanaguages = {
   [lang: string]: number;
@@ -80,4 +80,10 @@ export function isRowCommit(
   data: Repository | CommitWithRepository
 ): data is CommitWithRepository {
   return (data as CommitWithRepository).sha !== undefined;
+}
+
+export function isStatistics(
+  data: ReturnDataType | number
+): data is Statistics {
+  return (data as Statistics).watchers !== undefined;
 }

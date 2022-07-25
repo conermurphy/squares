@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useRepository } from '../contexts';
+import { useRepository } from '@/contexts';
 import useFetchData from './useFetchData';
 
 export default function useDataLengths() {

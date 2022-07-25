@@ -1,5 +1,5 @@
 import React from 'react';
-import { DataSectionHeaderProps } from '../../types/types';
+import { DataSectionHeaderProps } from '@/types/types';
 
 export default function DataSectionHeader({
   heading,

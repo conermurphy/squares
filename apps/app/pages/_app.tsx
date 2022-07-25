@@ -12,7 +12,7 @@ export default function MyApp({
     <SessionProvider session={session}>
       <main className="flex flex-row min-h-screen bg-background text-text font-body">
         <Sidebar />
-        <div className="flex flex-col items-center mx-20 my-10 w-full">
+        <div className="flex flex-col items-center my-5 md:mx-10 lg:mx-20 md:my-10 w-full">
           <div className="max-w-7xl">
             <Component {...pageProps} />
           </div>

@@ -30,7 +30,7 @@ export default function NavLink({
           }`}
         >
           {icon}
-          <span className="font-heading text-xl">{text}</span>
+          <span className="hidden xl:block font-heading text-xl">{text}</span>
         </div>
       </a>
     </Link>

@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from 'next-auth/react';
-import { prisma } from '../../../../lib/prisma';
-import { getLastFetchDate, getUserAuth } from '../../../../utils';
+import { getDaysFromDate, getLastFetchDate, getUserAuth } from '@/utils';
+import { prisma } from '@/lib/prisma';
 
 export default async function commits(
   req: NextApiRequest,
@@ -44,11 +44,21 @@ export default async function commits(
             },
             select: {
               name: true,
+              lastFetchDates: {
+                where: {
+                  repositoryId: parseInt(id),
+                },
+                select: {
+                  commits: true,
+                },
+              },
             },
           });
 
-          const sinceDate = new Date();
-          sinceDate.setDate(sinceDate.getDate() - 21);
+          const commitFetchDate = getDaysFromDate({
+            date: repoData?.lastFetchDates[0].commits,
+            days: 21,
+          });
 
           // list commits in a repo
           const transformedCommits = await octokit.paginate(
@@ -57,7 +67,9 @@ export default async function commits(
               owner: login,
               repo: repoData?.name || '',
               per_page: 100,
-              since: sinceDate.toISOString(),
+              since: commitFetchDate
+                ? commitFetchDate.toISOString()
+                : undefined,
             },
             (response) =>
               response.data.map((commit) => ({
@@ -135,9 +147,16 @@ export default async function commits(
           );
         }
 
+        const sinceDate = getDaysFromDate({
+          days: 21,
+        });
+
         const commitData = await prisma.commit.findMany({
           where: {
             repositoryId: parseInt(id),
+            commitDate: {
+              gte: sinceDate,
+            },
           },
           orderBy: {
             commitDate: 'desc',

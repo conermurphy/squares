@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from 'next-auth/react';
-import { prisma } from '../../../../../lib/prisma';
+import { getDaysFromDate } from '@/utils';
+import { prisma } from '@/lib/prisma';
 
 export default async function reposCount(
   req: NextApiRequest,
@@ -23,10 +24,18 @@ export default async function reposCount(
             error: 'Query parameter is not the expected type of "string"',
           });
         }
+
+        const sinceDate = getDaysFromDate({
+          days: 21,
+        });
+
         // Return all of the repo data from Prisma for the user
         const commitsLength = await prisma.commit.count({
           where: {
             repositoryId: parseInt(id),
+            commitDate: {
+              gte: sinceDate,
+            },
           },
         });
 

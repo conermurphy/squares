@@ -6,9 +6,9 @@ import {
   GoOrganization,
   GoRepo,
 } from 'react-icons/go';
+import { handleAuthRedirect, useFetchData } from '@/utils';
+import { RepositoryProvider } from '@/contexts';
 import { Contributors, Languages, SEO, Statistics, Table } from '../components';
-import { RepositoryProvider } from '../contexts';
-import { handleAuthRedirect, useFetchData } from '../utils';
 
 export default function Repositories() {
   const dataHelper = {
@@ -38,8 +38,10 @@ export default function Repositories() {
         metaTitle="Repositories"
         metaDescription="See all your GitHub repositories easier than ever."
       />
-      <h1 className="text-4xl font-heading mb-6">Your Repositories</h1>
-      <div className="flex flex-col gap-9">
+      <div className="flex flex-col gap-9 max-w-full">
+        <h1 className="text-4xl font-heading mx-5 md:mx-10 lg:m-0">
+          Your Repositories
+        </h1>
         <Table
           headings={['Repo Name', 'Created', 'Last Updated', '🔗', '✅']}
           dataHelper={dataHelper.repos}
@@ -50,7 +52,7 @@ export default function Repositories() {
           }}
           type="repositories"
         />
-        <div className="grid grid-cols-2 gap-9">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-9">
           <Languages
             headerData={{
               heading: 'Language Breakdown',
@@ -59,7 +61,7 @@ export default function Repositories() {
             }}
             dataHelper={dataHelper.languages}
           />
-          <div className="grid grid-cols-1 gap-9">
+          <div className="grid grid-cols-1 gap-9 content-center">
             <Statistics
               headerData={{
                 heading: 'Statistics',

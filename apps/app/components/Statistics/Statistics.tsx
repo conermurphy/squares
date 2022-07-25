@@ -8,12 +8,13 @@ import {
   GoRepoForked,
   GoStar,
 } from 'react-icons/go';
-import { useRepository } from '../../contexts';
 import {
   DataHelper,
   DataSectionHeaderProps,
+  isStatistics,
   StatGridProps,
-} from '../../types/types';
+} from '@/types/types';
+import { useRepository } from '@/contexts';
 import DataSectionHeader from '../DataSectionHeader/DataSectionHeader';
 
 interface IProps {
@@ -61,7 +62,7 @@ const skeletonData = {
 
 function StatGrid({ data }: StatGridProps) {
   return (
-    <div className="grid grid-cols-3 w-full gap-6">
+    <div className="grid grid-cols-2 lg:grid-cols-3 w-full gap-6">
       {data &&
         Object.entries(data).map(([key, value]) => (
           <div key={key} className="flex flex-col gap-2">
@@ -78,7 +79,7 @@ function StatGrid({ data }: StatGridProps) {
 
 export default function Statistics({ dataHelper, headerData }: IProps) {
   const {
-    repoData: { selectedRepoId },
+    repoData: { selectedRepoId, repoCommitsLoading },
   } = useRepository();
 
   const { loading, data, fetchData } = dataHelper;
@@ -95,7 +96,9 @@ export default function Statistics({ dataHelper, headerData }: IProps) {
   }, [selectedRepoId]);
 
   return (
-    <section className={!selectedRepoId ? 'opacity-50' : ''}>
+    <section
+      className={`mx-5 md:mx-10 lg:mx-0 ${!selectedRepoId ? 'opacity-50' : ''}`}
+    >
       <DataSectionHeader {...headerData} />
       <div className="flex flex-row flex-wrap gap-3 w-full border border-tableBorder rounded-b-2xl border-t-0 px-10 py-7 min-h-[200px]">
         {/* If data is not loading and no repository is selected, prompt the user to select one */}
@@ -104,20 +107,23 @@ export default function Statistics({ dataHelper, headerData }: IProps) {
             <div className="rounded-full bg-accent p-3">
               <GoInfo size="25px" />
             </div>
-            <p className="font-heading text-xl">
+            <p className="font-heading text-xl text-center">
               Please select a repository to look up.
             </p>
           </div>
         ) : null}
 
         {/* If data is loading in, show a loading skeleton */}
-        {loading ? (
+        {loading || repoCommitsLoading ? (
           <div className="opacity-10 animate-pulse w-full">
             <StatGrid data={skeletonData} />
           </div>
         ) : null}
 
         {/* Insert actual data rendering here */}
+        {!repoCommitsLoading && selectedRepoId && data && isStatistics(data) ? (
+          <StatGrid data={data} />
+        ) : null}
       </div>
     </section>
   );

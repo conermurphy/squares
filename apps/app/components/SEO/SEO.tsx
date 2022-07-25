@@ -1,6 +1,5 @@
 import React from 'react';
 import Head from 'next/head';
-import { server } from '../../config';
 
 interface IProps {
   metaTitle: string;
@@ -23,8 +22,8 @@ export default function SEO({
   canonicalUrl = '',
   date = '',
 }: IProps) {
-  const absoluteUrl = `${server}/${url}`;
-  const image = metaImage ? `${server}${metaImage}` : `${server}/favicon.png`;
+  const absoluteUrl = `/${url}`;
+  const image = metaImage ? `${metaImage}` : `/favicon.png`;
   const title = metaTitle ? `${metaTitle} | Squares` : 'Squares';
 
   return (

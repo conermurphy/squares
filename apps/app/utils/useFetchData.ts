@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { server } from '@/config';
 import { ErrorMessage, ReturnDataType } from '@/types/types';
 
 interface FetchDataProps {
@@ -25,7 +24,7 @@ export default function useFetchData({ method }: FetchDataProps) {
 
     switch (method) {
       case 'GET': {
-        const res = await fetch(`${server}${endpoint}`, {
+        const res = await fetch(endpoint, {
           method,
           headers: {
             'Content-Type': 'application/json',

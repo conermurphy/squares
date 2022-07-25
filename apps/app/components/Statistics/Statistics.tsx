@@ -18,7 +18,7 @@ import DataSectionHeader from '../DataSectionHeader/DataSectionHeader';
 import SelectRepository from '../SkeletonComponents/SelectRepository';
 
 interface IProps {
-  dataHelper: DataHelper;
+  dataHelper: DataHelper[];
   headerData: DataSectionHeaderProps;
 }
 
@@ -82,14 +82,24 @@ export default function Statistics({ dataHelper, headerData }: IProps) {
     repoData: { selectedRepoId, repoCommitsLoading },
   } = useRepository();
 
-  const { loading, data, fetchData } = dataHelper;
+  const { loading, data, fetchData } = dataHelper[0];
+  const {
+    loading: prsLoading,
+    data: prsData,
+    fetchData: prsFetchData,
+  } = dataHelper[1];
 
   useEffect(() => {
     if (!selectedRepoId) return;
     async function dataLoad() {
-      await fetchData({
-        endpoint: `/api/repositories/statistics/${selectedRepoId}`,
-      });
+      await Promise.all([
+        await prsFetchData({
+          endpoint: `/api/repositories/prs/${selectedRepoId}`,
+        }),
+        await fetchData({
+          endpoint: `/api/repositories/statistics/${selectedRepoId}`,
+        }),
+      ]);
     }
 
     dataLoad();
@@ -105,14 +115,18 @@ export default function Statistics({ dataHelper, headerData }: IProps) {
         {!selectedRepoId ? <SelectRepository isSmall /> : null}
 
         {/* If data is loading in, show a loading skeleton */}
-        {loading || repoCommitsLoading ? (
+        {loading || repoCommitsLoading || prsLoading ? (
           <div className="opacity-10 animate-pulse w-full">
             <StatGrid data={skeletonData} />
           </div>
         ) : null}
 
         {/* Insert actual data rendering here */}
-        {!repoCommitsLoading && selectedRepoId && data && isStatistics(data) ? (
+        {!repoCommitsLoading &&
+        !prsLoading &&
+        selectedRepoId &&
+        data &&
+        isStatistics(data) ? (
           <StatGrid data={data} />
         ) : null}
       </div>

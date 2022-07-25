@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  GoMarkGithub,
-  GoDiffAdded,
-  GoDiffRemoved,
-  GoInfo,
-} from 'react-icons/go';
+import { GoMarkGithub, GoDiffAdded, GoDiffRemoved } from 'react-icons/go';
 import {
   DataHelper,
   DataSectionHeaderProps,
@@ -44,7 +39,7 @@ export default function Table({
           !repoData.selectedRepoId && type === 'commits' ? 'opacity-50' : ''
         }
       >
-        <div className="relative overflow-scroll">
+        <div className="relative overflow-scroll md:overflow-hidden">
           <div className="sticky top-0 left-0">
             <DataSectionHeader {...tableHeaderData} />
           </div>

@@ -68,7 +68,7 @@ export default function Repositories() {
                 description: 'This repo in numbers',
                 icon: <GoGraph size="20px" />,
               }}
-              dataHelper={dataHelper.statistics}
+              dataHelper={[dataHelper.statistics, dataHelper.prs]}
             />
             <Contributors
               headerData={{

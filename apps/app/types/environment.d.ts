@@ -3,5 +3,6 @@ namespace NodeJS {
     GITHUB_ID: string;
     GITHUB_SECRET: string;
     NEXT_PUBLIC_RESULTS_PER_PAGE: string;
+    APP_URL: string;
   }
 }

@@ -12,4 +12,7 @@ module.exports = createJestConfig({
   rootDir: './',
   displayName: 'app',
   setupFilesAfterEnv: ['./jest.setup.ts'],
+  moduleNameMapper: {
+    '^@/(.*)$': '<rootDir>/$1',
+  },
 });

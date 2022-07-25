@@ -7,7 +7,7 @@ import {
   signIn,
 } from 'next-auth/react';
 import React from 'react';
-import { handleAuthRedirect } from '../../utils';
+import { handleAuthRedirect } from '@/utils';
 
 interface IProps {
   providers: Record<

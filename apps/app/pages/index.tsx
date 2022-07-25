@@ -1,7 +1,7 @@
 import { GetServerSideProps } from 'next';
 import { Session } from 'next-auth';
 import { useSession, signIn, signOut } from 'next-auth/react';
-import { handleAuthRedirect } from '../utils';
+import { handleAuthRedirect } from '@/utils';
 
 export default function Home() {
   const { data: session } = useSession();

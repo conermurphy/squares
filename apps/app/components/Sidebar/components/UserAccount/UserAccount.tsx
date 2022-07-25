@@ -1,7 +1,7 @@
-import React, { useEffect } from "react";
-import Img from "next/image";
-import { useFetchData } from "@/utils";
-import { isUserSidebar } from "@/types/types";
+import React, { useEffect } from 'react';
+import Img from 'next/image';
+import { useFetchData } from '@/utils';
+import { isUserSidebar } from '@/types/types';
 
 export default function UserAccount() {
   // language data fetching
@@ -12,7 +12,7 @@ export default function UserAccount() {
     message: usersMessage,
     fetchData: usersFetchData,
   } = useFetchData({
-    method: "GET",
+    method: 'GET',
   });
 
   useEffect(() => {
@@ -26,7 +26,7 @@ export default function UserAccount() {
 
   return (
     <div className="flex flex-row gap-3 items-center lg:pt-6">
-      {usersData && typeof usersData !== "number" && isUserSidebar(usersData) && (
+      {usersData && typeof usersData !== 'number' && isUserSidebar(usersData) && (
         <>
           <div className="relative w-10 h-10 rounded-lg overflow-hidden">
             <Img src={usersData.image} layout="fill" />

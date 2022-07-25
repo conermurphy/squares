@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect } from 'react';
 import {
   GoEye,
   GoGitCommit,
@@ -6,16 +6,16 @@ import {
   GoOrganization,
   GoRepoForked,
   GoStar,
-} from "react-icons/go";
+} from 'react-icons/go';
 import {
   DataHelper,
   DataSectionHeaderProps,
   isStatistics,
   StatGridProps,
-} from "@/types/types";
-import { useRepository } from "@/contexts";
-import DataSectionHeader from "../DataSectionHeader/DataSectionHeader";
-import SelectRepository from "../SkeletonComponents/SelectRepository";
+} from '@/types/types';
+import { useRepository } from '@/contexts';
+import DataSectionHeader from '../DataSectionHeader/DataSectionHeader';
+import SelectRepository from '../SkeletonComponents/SelectRepository';
 
 interface IProps {
   dataHelper: DataHelper;
@@ -26,27 +26,27 @@ type StatHelper = { [key: string]: { title: string; icon: JSX.Element } };
 
 const statHelper: StatHelper = {
   watchers: {
-    title: "Watchers",
+    title: 'Watchers',
     icon: <GoEye size="23px" />,
   },
   stars: {
-    title: "Stars",
+    title: 'Stars',
     icon: <GoStar size="23px" />,
   },
   forks: {
-    title: "Forks",
+    title: 'Forks',
     icon: <GoRepoForked size="23px" />,
   },
   contributors: {
-    title: "Contributors",
+    title: 'Contributors',
     icon: <GoOrganization size="23px" />,
   },
   pullRequests: {
-    title: "Pull Requests",
+    title: 'Pull Requests',
     icon: <GoGitPullRequest size="23px" />,
   },
   commits: {
-    title: "Commits",
+    title: 'Commits',
     icon: <GoGitCommit size="23px" />,
   },
 };
@@ -97,7 +97,7 @@ export default function Statistics({ dataHelper, headerData }: IProps) {
 
   return (
     <section
-      className={`mx-5 md:mx-10 lg:mx-0 ${!selectedRepoId ? "opacity-50" : ""}`}
+      className={`mx-5 md:mx-10 lg:mx-0 ${!selectedRepoId ? 'opacity-50' : ''}`}
     >
       <DataSectionHeader {...headerData} />
       <div className="flex flex-row flex-wrap gap-3 w-full border border-tableBorder rounded-b-2xl border-t-0 px-10 py-7 min-h-[200px]">

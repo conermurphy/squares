@@ -1,8 +1,8 @@
-import React from "react";
-import { BiLineChart } from "react-icons/bi";
-import { GoGitCommit, GoRepo, GoSettings } from "react-icons/go";
-import NavLink from "../NavLink/NavLink";
-import UserAccount from "../UserAccount/UserAccount";
+import React from 'react';
+import { BiLineChart } from 'react-icons/bi';
+import { GoGitCommit, GoRepo, GoSettings } from 'react-icons/go';
+import NavLink from '../NavLink/NavLink';
+import UserAccount from '../UserAccount/UserAccount';
 
 export default function MobileNavBar() {
   return (

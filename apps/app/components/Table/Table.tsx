@@ -1,27 +1,27 @@
-import React from "react";
+import React from 'react';
 import {
   GoMarkGithub,
   GoDiffAdded,
   GoDiffRemoved,
   GoInfo,
-} from "react-icons/go";
+} from 'react-icons/go';
 import {
   DataHelper,
   DataSectionHeaderProps,
   isCommit,
   isRepo,
   isRowCommit,
-} from "@/types/types";
-import { useRepository } from "@/contexts";
-import DataSectionHeader from "../DataSectionHeader/DataSectionHeader";
-import { TablePagination } from "./components";
-import SelectRepository from "../SkeletonComponents/SelectRepository";
-import NoDataFound from "../SkeletonComponents/NoDataFound";
+} from '@/types/types';
+import { useRepository } from '@/contexts';
+import DataSectionHeader from '../DataSectionHeader/DataSectionHeader';
+import { TablePagination } from './components';
+import SelectRepository from '../SkeletonComponents/SelectRepository';
+import NoDataFound from '../SkeletonComponents/NoDataFound';
 
 interface IProps {
   headings: string[];
   tableHeaderData: DataSectionHeaderProps;
-  type: "repositories" | "commits";
+  type: 'repositories' | 'commits';
   dataHelper: DataHelper;
 }
 
@@ -31,7 +31,7 @@ export default function Table({
   dataHelper,
   type,
 }: IProps) {
-  const borderClasses = "border-b border-tableBorder";
+  const borderClasses = 'border-b border-tableBorder';
 
   const { setRepoData, repoData } = useRepository();
 
@@ -41,7 +41,7 @@ export default function Table({
     <div className="relative max-w-[100vw] px-5 md:px-10 lg:px-0">
       <section
         className={
-          !repoData.selectedRepoId && type === "commits" ? "opacity-50" : ""
+          !repoData.selectedRepoId && type === 'commits' ? 'opacity-50' : ''
         }
       >
         <div className="relative overflow-scroll">
@@ -57,14 +57,14 @@ export default function Table({
                 {!loading &&
                 Array.isArray(data) &&
                 !data?.length &&
-                type === "commits" ? (
+                type === 'commits' ? (
                   <th className="py-5 opacity-75 text-center">
                     No Commits Found
                   </th>
                 ) : null}
 
                 {/* If not loading, no data and commits type, show a message to select a repository */}
-                {!loading && !data && type === "commits" ? (
+                {!loading && !data && type === 'commits' ? (
                   <th className="py-5 opacity-75 text-center">
                     Awaiting Input
                   </th>
@@ -76,11 +76,11 @@ export default function Table({
                       <th
                         key={`${heading}-${i}`}
                         className={`text-left py-5 opacity-75  
-                ${i === 0 ? "pl-10 w-88" : ""} 
-                ${i !== arr.length - 1 && i !== 0 ? "w-72" : ""}
-                ${i === arr.length - 1 && type === "commits" ? "w-24" : ""}
-                ${i === arr.length - 1 && type === "repositories" ? "w-28" : ""}
-                ${i === arr.length - 2 && type === "repositories" ? "w-36" : ""}
+                ${i === 0 ? 'pl-10 w-88' : ''} 
+                ${i !== arr.length - 1 && i !== 0 ? 'w-72' : ''}
+                ${i === arr.length - 1 && type === 'commits' ? 'w-24' : ''}
+                ${i === arr.length - 1 && type === 'repositories' ? 'w-28' : ''}
+                ${i === arr.length - 2 && type === 'repositories' ? 'w-36' : ''}
                 `}
                       >
                         {heading}
@@ -91,7 +91,7 @@ export default function Table({
             </thead>
             <tbody className="h-[455px]">
               {/* If not loading, no data and commits type, show a message to select a repository */}
-              {!loading && !data && type === "commits" ? (
+              {!loading && !data && type === 'commits' ? (
                 <tr>
                   <td className="h-[455px] w-full">
                     <SelectRepository />
@@ -103,7 +103,7 @@ export default function Table({
               {!loading &&
               Array.isArray(data) &&
               !data?.length &&
-              type === "commits" ? (
+              type === 'commits' ? (
                 <tr>
                   <td className="h-[455px] w-full p-8 text-center">
                     <NoDataFound
@@ -170,8 +170,8 @@ export default function Table({
                             type="button"
                             className={`border border-text px-4 py-2 rounded text-xs ${
                               row.id === repoData.selectedRepoId
-                                ? "bg-accent"
-                                : ""
+                                ? 'bg-accent'
+                                : ''
                             }`}
                             onClick={() =>
                               setRepoData({
@@ -196,13 +196,13 @@ export default function Table({
                 }).map((_, i) => (
                   <tr key={i} className="opacity-25 animate-pulse">
                     <td className={`p-5 pl-10 font-body ${borderClasses}`}>
-                      {type === "commits" ? "Commit SHA" : "Repository Name"}
+                      {type === 'commits' ? 'Commit SHA' : 'Repository Name'}
                     </td>
                     <td className={borderClasses}>
-                      {type === "commits" ? "Repository" : "01/01/1990"}
+                      {type === 'commits' ? 'Repository' : '01/01/1990'}
                     </td>
                     <td className={borderClasses}>01/01/1990</td>
-                    {type === "commits" ? (
+                    {type === 'commits' ? (
                       <td className={borderClasses}>
                         <div className="flex flex-row items-center gap-6">
                           <div className="flex flex-row items-center gap-1">
@@ -219,7 +219,7 @@ export default function Table({
                     <td className={borderClasses}>
                       <GoMarkGithub size="23px" />
                     </td>
-                    {type !== "commits" ? (
+                    {type !== 'commits' ? (
                       <td className={borderClasses}>
                         <button
                           type="button"

@@ -1,9 +1,9 @@
-import React from "react";
-import "../styles/global.css";
-import type { AppProps } from "next/app";
-import { SessionProvider } from "next-auth/react";
-import { MobileNavBar } from "@/components/Sidebar/components";
-import { Sidebar } from "../components";
+import React from 'react';
+import '../styles/global.css';
+import type { AppProps } from 'next/app';
+import { SessionProvider } from 'next-auth/react';
+import { MobileNavBar } from '@/components/Sidebar/components';
+import { Sidebar } from '../components';
 
 export default function MyApp({
   Component,

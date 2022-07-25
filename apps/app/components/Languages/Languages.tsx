@@ -1,11 +1,11 @@
-import React, { useEffect } from "react";
-import { GoInfo } from "react-icons/go";
-import { DataHelper, DataSectionHeaderProps } from "@/types/types";
-import { useRepository } from "@/contexts";
-import DataSectionHeader from "../DataSectionHeader/DataSectionHeader";
-import languageColours from "../../assets/languageColours.json";
-import SelectRepository from "../SkeletonComponents/SelectRepository";
-import NoDataFound from "../SkeletonComponents/NoDataFound";
+import React, { useEffect } from 'react';
+import { GoInfo } from 'react-icons/go';
+import { DataHelper, DataSectionHeaderProps } from '@/types/types';
+import { useRepository } from '@/contexts';
+import DataSectionHeader from '../DataSectionHeader/DataSectionHeader';
+import languageColours from '../../assets/languageColours.json';
+import SelectRepository from '../SkeletonComponents/SelectRepository';
+import NoDataFound from '../SkeletonComponents/NoDataFound';
 
 interface IProps {
   dataHelper: DataHelper;
@@ -65,15 +65,15 @@ export default function Languages({ dataHelper, headerData }: IProps) {
 
   return (
     <section
-      className={`mx-5 md:mx-10 lg:mx-0 ${!selectedRepoId ? "opacity-50" : ""}`}
+      className={`mx-5 md:mx-10 lg:mx-0 ${!selectedRepoId ? 'opacity-50' : ''}`}
     >
       <DataSectionHeader {...headerData} />
       <div
         className={`flex flex-col gap-3 w-full border border-tableBorder rounded-b-2xl border-t-0 px-10 py-7 min-h-[489px] ${
           !selectedRepoId ||
           (languagesData && !Object.keys(languagesData)?.length)
-            ? "items-center justify-center"
-            : ""
+            ? 'items-center justify-center'
+            : ''
         }`}
       >
         {/* If no repository is selected, prompt the user to select one */}
@@ -105,7 +105,7 @@ export default function Languages({ dataHelper, headerData }: IProps) {
                         style={{
                           width: percentValue,
                           backgroundColor:
-                            languageColourData[key]?.color || "bg-brand",
+                            languageColourData[key]?.color || 'bg-brand',
                         }}
                       />
                     </div>
@@ -131,7 +131,7 @@ export default function Languages({ dataHelper, headerData }: IProps) {
                         style={{
                           width: percentValue,
                           backgroundColor:
-                            languageColourData[key]?.color || "bg-brand",
+                            languageColourData[key]?.color || 'bg-brand',
                         }}
                       />
                     </div>

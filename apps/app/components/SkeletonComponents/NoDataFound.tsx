@@ -1,5 +1,5 @@
-import React from "react";
-import { GoInfo } from "react-icons/go";
+import React from 'react';
+import { GoInfo } from 'react-icons/go';
 
 interface IProps {
   message: string;

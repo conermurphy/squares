@@ -37,7 +37,7 @@ export default function Commits() {
             isRepo(reposData) &&
             reposData.map(async ({ id }) => {
               await repoCommitsFetchData({
-                endpoint: `/api/repositories/commits/${id}/1`,
+                endpoint: `/api/commits/${id}/1`,
               });
             }),
         ]),
@@ -63,7 +63,7 @@ export default function Commits() {
             description: 'Track how your commits compare day to day',
             icon: <GoGitCommit size="25px" />,
           }}
-          dataHelper={dataHelper.repoCommits}
+          dataHelper={dataHelper.commits}
         />
         <Table
           headings={[
@@ -73,7 +73,7 @@ export default function Commits() {
             'Changes',
             '🔗',
           ]}
-          dataHelper={dataHelper.commits}
+          dataHelper={dataHelper.repoCommits}
           tableHeaderData={{
             heading: 'Commits Breakdown',
             description:

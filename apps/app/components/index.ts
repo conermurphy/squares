@@ -7,3 +7,4 @@ export { default as Languages } from './Languages/Languages';
 export { default as Statistics } from './Statistics/Statistics';
 export { default as CommitsGraph } from './CommitsGraph/CommitsGraph';
 export { default as GeneralSettings } from './GeneralSettings/GeneralSettings';
+export { default as RecentRepositories } from './RecentRepositories/RecentRepositories';

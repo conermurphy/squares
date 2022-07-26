@@ -126,7 +126,7 @@ export default function CommitsGraph({ dataHelper, headerData }: IProps) {
         borderWidth: 5,
         fill: false,
         data: finalData ? finalData?.averages : [],
-        radius: 0,
+        radius: 1,
         borderCapStyle: 'round' as const,
         tension: 0.25,
       },

@@ -5,7 +5,7 @@ import { DataHelper } from '@/types/types';
 
 interface IProps {
   dataFetch: DataHelper['fetchData'];
-  type: 'repositories' | 'commits';
+  type: 'repositories' | 'commits' | 'userCommits';
 }
 
 export default function TablePagination({
@@ -16,9 +16,25 @@ export default function TablePagination({
 
   const { repoData, setRepoData } = useRepository();
 
-  const { reposLength, commitsLength } = useDataLengths();
+  const { reposLength, commitsLength, userCommitsLength } = useDataLengths({
+    type,
+  });
 
-  const dataLength = type === 'repositories' ? reposLength : commitsLength;
+  let dataLength = 0;
+
+  switch (type) {
+    case 'repositories':
+      dataLength = reposLength;
+      break;
+    case 'commits':
+      dataLength = commitsLength;
+      break;
+    case 'userCommits':
+      dataLength = userCommitsLength;
+      break;
+    default:
+      break;
+  }
 
   const totalPages = Math.round(
     dataLength / parseInt(process.env.NEXT_PUBLIC_RESULTS_PER_PAGE)
@@ -57,6 +73,11 @@ export default function TablePagination({
           repoCommitsLoading: false,
         });
       }
+      if (type === 'userCommits') {
+        await dataFetch({
+          endpoint: `/api/commits/${pageNumber}`,
+        });
+      }
     };
 
     fetchData();
@@ -77,7 +98,7 @@ export default function TablePagination({
       >
         Previous
       </button>
-      {(totalPages && type === 'commits') || type === 'repositories' ? (
+      {totalPages ? (
         <p className="hidden md:flex opacity-75">{`Page ${pageNumber} of ${totalPages}`}</p>
       ) : null}
       <button

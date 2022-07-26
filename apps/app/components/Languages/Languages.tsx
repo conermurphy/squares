@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
-import { GoInfo } from 'react-icons/go';
 import { DataHelper, DataSectionHeaderProps } from '@/types/types';
 import { useRepository } from '@/contexts';
+import { round } from '@/utils';
 import DataSectionHeader from '../DataSectionHeader/DataSectionHeader';
 import languageColours from '../../assets/languageColours.json';
 import SelectRepository from '../SkeletonComponents/SelectRepository';
@@ -19,11 +19,6 @@ interface IPercentageMakerProps {
 const languageColourData = languageColours as {
   [key: string]: { color: string | null; url: string };
 };
-
-function round(value: number, precision: number) {
-  const multiplier = 10 ** (precision || 0);
-  return Math.round(value * multiplier) / multiplier;
-}
 
 function percentageMaker({ data }: IPercentageMakerProps): [string, number][] {
   const total = Object.values(data).reduce((acc, cur) => acc + cur, 0);

@@ -48,9 +48,9 @@ export default function SignIn({ providers }: IProps): JSX.Element {
           </div>
         </section>
         <div className="flex flex-row items-center justify-center bg-text w-full h-1/2 lg:w-7/12 rounded-t-[80px] lg:rounded-tr-none lg:rounded-l-[80px] overflow-hidden md:h-screen border border-tableBorder border-r-0">
-          <div className="grid grid-cols-9 gap-y-8 gap-x-48 rotate-45">
+          <div className="grid grid-cols-12 gap-y-8 gap-x-48 rotate-45">
             {Array.from({
-              length: 90,
+              length: 200,
             }).map((_, i) => (
               <div
                 key={i}

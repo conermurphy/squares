@@ -25,7 +25,7 @@ export default function Sidebar(): JSX.Element {
           href="/repositories"
           icon={<GoRepo size="20px" />}
         />
-        <div className="grow">
+        <div className="grow w-full">
           <NavLink
             text="Commits"
             href="/commits"

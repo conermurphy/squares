@@ -23,7 +23,7 @@ export default function NavLink({
 
   return (
     <Link href={href} passHref>
-      <a className={`flex items-start justify-start  ${className || ''}`}>
+      <a className={`flex items-start justify-start w-full ${className || ''}`}>
         <div
           className={`flex flex-row items-center gap-4  p-4 rounded-xl w-full ${
             isActive ? 'bg-accent' : ''

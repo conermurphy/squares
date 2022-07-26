@@ -130,5 +130,5 @@ model LastFetchDates {
   pullRequests String      @default("")
   contributors String      @default("")
   repositoryId Int         @id
-  Repository   Repository? @relation(fields: [repositoryId], references: [id])
+  repository   Repository? @relation(fields: [repositoryId], references: [id])
 }

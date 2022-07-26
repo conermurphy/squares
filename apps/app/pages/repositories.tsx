@@ -56,7 +56,7 @@ export default function Repositories() {
           <Languages
             headerData={{
               heading: 'Language Breakdown',
-              description: 'This  repositories languages breakdown',
+              description: 'This repositories languages breakdown',
               icon: <GoCode size="20px" />,
             }}
             dataHelper={dataHelper.languages}

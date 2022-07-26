@@ -2,10 +2,17 @@ import { useEffect } from 'react';
 import { useRepository } from '@/contexts';
 import useFetchData from './useFetchData';
 
-export default function useDataLengths() {
+interface IProps {
+  type: 'repositories' | 'commits' | 'userCommits';
+}
+
+export default function useDataLengths({ type }: IProps) {
   const { repoData } = useRepository();
 
   const dataHelper = {
+    userCommits: useFetchData({
+      method: 'GET',
+    }),
     commits: useFetchData({
       method: 'GET',
     }),
@@ -16,14 +23,20 @@ export default function useDataLengths() {
 
   useEffect(() => {
     async function fetchData() {
-      await Promise.all([
-        await dataHelper.repos.fetchData({
-          endpoint: `/api/repositories/count`,
-        }),
-        await dataHelper.commits.fetchData({
-          endpoint: `/api/repositories/commits/count/${repoData.selectedRepoId}`,
-        }),
-      ]);
+      if (type !== 'userCommits') {
+        await Promise.all([
+          await dataHelper.repos.fetchData({
+            endpoint: `/api/repositories/count`,
+          }),
+          await dataHelper.commits.fetchData({
+            endpoint: `/api/repositories/commits/count/${repoData.selectedRepoId}`,
+          }),
+        ]);
+      } else {
+        await dataHelper.userCommits.fetchData({
+          endpoint: `/api/commits/count/`,
+        });
+      }
     }
 
     fetchData();
@@ -34,5 +47,9 @@ export default function useDataLengths() {
       typeof dataHelper.repos.data === 'number' ? dataHelper.repos.data : 0,
     commitsLength:
       typeof dataHelper.commits.data === 'number' ? dataHelper.commits.data : 0,
+    userCommitsLength:
+      typeof dataHelper.userCommits.data === 'number'
+        ? dataHelper.userCommits.data
+        : 0,
   };
 }

@@ -65,7 +65,7 @@ export default function Repositories() {
             <Statistics
               headerData={{
                 heading: 'Statistics',
-                description: 'This repo in numbers',
+                description: 'This repo in numbers for the last 21 days.',
                 icon: <GoGraph size="20px" />,
               }}
               dataHelper={[dataHelper.statistics, dataHelper.prs]}

@@ -19,7 +19,7 @@ export default function MyApp({
           <>
             <Sidebar />
             <div className="flex flex-col items-center my-5 md:mx-10 lg:mx-20 lg:my-10 w-full mb-32 overflow-x-hidden">
-              <div className="max-w-7xl">
+              <div className="max-w-7xl w-full">
                 <Component {...pageProps} />
               </div>
             </div>

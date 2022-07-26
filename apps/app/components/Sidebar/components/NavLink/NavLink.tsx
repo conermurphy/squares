@@ -25,7 +25,7 @@ export default function NavLink({
     <Link href={href} passHref>
       <a className={`flex items-start justify-start w-full ${className || ''}`}>
         <div
-          className={`flex flex-row items-center gap-4  p-4 rounded-xl w-full ${
+          className={`flex flex-row items-center gap-4 p-4 rounded-xl w-full ${
             isActive ? 'bg-accent' : ''
           }`}
         >

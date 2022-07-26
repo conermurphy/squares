@@ -1,28 +1,29 @@
 import { GetServerSideProps } from 'next';
 import { Session } from 'next-auth';
-import { useSession, signIn, signOut } from 'next-auth/react';
 import { handleAuthRedirect } from '@/utils';
+import { GeneralSettings, SEO } from '@/components';
+import { GoSettings } from 'react-icons/go';
 
 export default function Settings() {
-  const { data: session } = useSession();
   return (
-    <div>
-      {session ? (
-        <button onClick={() => signOut()} type="button">
-          Sign Out
-        </button>
-      ) : (
-        <button onClick={() => signIn()} type="button">
-          Sign In
-        </button>
-      )}
-      <h1 className="text-3xl font-heading font-bold underline text-brand">
-        App
-      </h1>
-      <p className="text-accent font-body">
-        {session?.user?.name && `Welcome ${session?.user?.name}`}
-      </p>
-    </div>
+    <>
+      <SEO
+        metaTitle="Settings"
+        metaDescription="All the settings to control your Squares experience"
+      />
+      <div className="flex flex-col gap-9 max-w-full">
+        <h1 className="text-4xl font-heading mx-5 md:mx-10 lg:m-0">Settings</h1>
+        <div className="flex flex-col gap-9 w-full">
+          <GeneralSettings
+            headerData={{
+              heading: 'General Settings',
+              description: 'Settings to customise/control your experience.',
+              icon: <GoSettings size="20px" />,
+            }}
+          />
+        </div>
+      </div>
+    </>
   );
 }
 

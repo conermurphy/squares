@@ -67,9 +67,7 @@ export default async function commits(
               owner: login,
               repo: repoData?.name || '',
               per_page: 100,
-              since: repoData?.lastFetchDates[0].commits
-                ? commitFetchDate.toISOString()
-                : undefined,
+              since: commitFetchDate.toISOString(),
             },
             (response) =>
               response.data.map((commit) => ({

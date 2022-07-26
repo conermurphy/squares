@@ -83,11 +83,7 @@ export default function Statistics({ dataHelper, headerData }: IProps) {
   } = useRepository();
 
   const { loading, data, fetchData } = dataHelper[0];
-  const {
-    loading: prsLoading,
-    data: prsData,
-    fetchData: prsFetchData,
-  } = dataHelper[1];
+  const { loading: prsLoading, fetchData: prsFetchData } = dataHelper[1];
 
   useEffect(() => {
     if (!selectedRepoId) return;
@@ -103,7 +99,7 @@ export default function Statistics({ dataHelper, headerData }: IProps) {
     }
 
     dataLoad();
-  }, [selectedRepoId]);
+  }, [selectedRepoId, repoCommitsLoading]);
 
   return (
     <section

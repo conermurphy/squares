@@ -31,7 +31,7 @@ async function vercel() {
               repoId: parseInt(process.env.REPO_ID),
               ref: process.env.GITHUB_HEAD_REF.replace('#', '%23'),
             },
-            target: process.env.GITHUB_BASE_REF === "main" ? 'production' : undefined,
+            target: process.env.GITHUB_REF_NAME === "main" ? 'production' : undefined,
           },
         }).then((res) => {
           // eslint-disable-next-line

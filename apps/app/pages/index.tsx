@@ -3,15 +3,14 @@ import { Session } from 'next-auth';
 import { handleAuthRedirect, useFetchData } from '@/utils';
 import { CommitsGraph, Languages, RecentRepositories, SEO } from '@/components';
 import { useEffect } from 'react';
-import { isUserSidebar } from '@/types/types';
 import { GoCode, GoGitCommit, GoRepo } from 'react-icons/go';
+import { useUser } from '@/contexts';
 
 export default function Home() {
+  const { userData } = useUser();
+
   const dataHelper = {
     commits: useFetchData({
-      method: 'GET',
-    }),
-    user: useFetchData({
       method: 'GET',
     }),
     languages: useFetchData({
@@ -24,14 +23,12 @@ export default function Home() {
 
   useEffect(() => {
     async function fetchData() {
-      await dataHelper.user.fetchData({
-        endpoint: `/api/users`,
+      await dataHelper.languages.fetchData({
+        endpoint: `/api/repositories/languages`,
       });
     }
     fetchData();
   }, []);
-
-  const { data: usersData, loading: usersLoading } = dataHelper.user;
 
   return (
     <>
@@ -41,12 +38,7 @@ export default function Home() {
       />
       <div className="flex flex-col gap-9 max-w-full">
         <h1 className="text-4xl font-heading mx-5 md:mx-10 lg:m-0">{`Welcome${
-          !usersLoading &&
-          usersData &&
-          typeof usersData !== 'number' &&
-          isUserSidebar(usersData)
-            ? `, ${usersData?.name}`
-            : ''
+          userData.name ? `, ${userData?.name}` : ''
         }`}</h1>
         <CommitsGraph
           headerData={{
@@ -59,8 +51,9 @@ export default function Home() {
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-9">
           <Languages
             headerData={{
-              heading: 'Language Breakdown',
-              description: 'This repositories languages breakdown',
+              heading: 'Your Languages',
+              description:
+                'Your favourite languages across all your repositories',
               icon: <GoCode size="20px" />,
             }}
             dataHelper={dataHelper.languages}

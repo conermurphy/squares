@@ -7,10 +7,15 @@ import {
   GoRepo,
 } from 'react-icons/go';
 import { handleAuthRedirect, useFetchData } from '@/utils';
-import { RepositoryProvider } from '@/contexts';
+import { useEffect } from 'react';
+import { useRepository } from '@/contexts';
 import { Contributors, Languages, SEO, Statistics, Table } from '../components';
 
 export default function Repositories() {
+  const {
+    repoData: { selectedRepoId },
+  } = useRepository();
+
   const dataHelper = {
     commits: useFetchData({
       method: 'GET',
@@ -32,8 +37,19 @@ export default function Repositories() {
     }),
   };
 
+  useEffect(() => {
+    if (!selectedRepoId) return;
+    async function dataLoad() {
+      await dataHelper.languages.fetchData({
+        endpoint: `/api/repositories/languages/${selectedRepoId}`,
+      });
+    }
+
+    dataLoad();
+  }, [selectedRepoId]);
+
   return (
-    <RepositoryProvider>
+    <>
       <SEO
         metaTitle="Repositories"
         metaDescription="See all your GitHub repositories easier than ever."
@@ -65,7 +81,8 @@ export default function Repositories() {
             <Statistics
               headerData={{
                 heading: 'Statistics',
-                description: 'This repo in numbers for the last 21 days.',
+                description:
+                  'This repo in numbers. *last 21 days of data only.',
                 icon: <GoGraph size="20px" />,
               }}
               dataHelper={[dataHelper.statistics, dataHelper.prs]}
@@ -98,7 +115,7 @@ export default function Repositories() {
           type="commits"
         />
       </div>
-    </RepositoryProvider>
+    </>
   );
 }
 

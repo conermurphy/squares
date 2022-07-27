@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { DataHelper, DataSectionHeaderProps } from '@/types/types';
 import { useRepository } from '@/contexts';
 import { round } from '@/utils';
+import { useRouter } from 'next/router';
 import DataSectionHeader from '../DataSectionHeader/DataSectionHeader';
 import languageColours from '../../assets/languageColours.json';
 import SelectRepository from '../SkeletonComponents/SelectRepository';
@@ -30,24 +31,19 @@ function percentageMaker({ data }: IPercentageMakerProps): [string, number][] {
 }
 
 export default function Languages({ dataHelper, headerData }: IProps) {
+  const { pathname } = useRouter();
+
+  const isDashboard = !['/repositories', '/commits', '/settings'].includes(
+    pathname
+  );
+
   const {
     repoData: { selectedRepoId },
   } = useRepository();
 
-  const { loading, data, fetchData } = dataHelper;
+  const { loading, data } = dataHelper;
 
   const languagesData = data as unknown as { [key: string]: number };
-
-  useEffect(() => {
-    if (!selectedRepoId) return;
-    async function dataLoad() {
-      await fetchData({
-        endpoint: `/api/repositories/languages/${selectedRepoId}`,
-      });
-    }
-
-    dataLoad();
-  }, [selectedRepoId]);
 
   const skeletonData = {
     CSS: 6841,
@@ -60,19 +56,21 @@ export default function Languages({ dataHelper, headerData }: IProps) {
 
   return (
     <section
-      className={`mx-5 md:mx-10 lg:mx-0 ${!selectedRepoId ? 'opacity-50' : ''}`}
+      className={`mx-5 md:mx-10 lg:mx-0 ${
+        !selectedRepoId && loading ? 'opacity-50' : ''
+      }`}
     >
       <DataSectionHeader {...headerData} />
       <div
         className={`flex flex-col gap-3 w-full border border-tableBorder rounded-b-2xl border-t-0 px-10 py-7 min-h-[489px] ${
-          !selectedRepoId ||
+          (!selectedRepoId && !isDashboard) ||
           (languagesData && !Object.keys(languagesData)?.length)
             ? 'items-center justify-center'
             : ''
         }`}
       >
         {/* If no repository is selected, prompt the user to select one */}
-        {!selectedRepoId ? <SelectRepository /> : null}
+        {!selectedRepoId && !isDashboard ? <SelectRepository /> : null}
 
         {/* If selected repo and no data and not loading, inform the user */}
         {selectedRepoId &&
@@ -111,30 +109,34 @@ export default function Languages({ dataHelper, headerData }: IProps) {
             })
           : null}
 
-        {/* If data is loading in, show a loading skeleton */}
+        {/* If data has loaded, show the actual data */}
         {languagesData && !loading
-          ? percentageMaker({ data: languagesData }).map(([key, value], i) => {
-              const percentValue = `${value}%`;
+          ? percentageMaker({ data: languagesData })
+              .sort(([, aVal], [, bVal]) => (aVal < bVal ? 1 : -1))
+              .map(([key, value], i) => {
+                const percentValue = `${value}%`;
 
-              return (
-                <div key={i} className="flex flex-col gap-2">
-                  <span>{key}</span>
-                  <div className="flex flex-row items-center gap-4">
-                    <div className="flex flex-row items-center w-full bg-text rounded-full">
-                      <div
-                        className="rounded-full p-1.5"
-                        style={{
-                          width: percentValue,
-                          backgroundColor:
-                            languageColourData[key]?.color || 'bg-brand',
-                        }}
-                      />
+                return (
+                  <div key={i} className="flex flex-col gap-2">
+                    <span>{key}</span>
+                    <div className="flex flex-row items-center gap-4">
+                      <div className="flex flex-row items-center w-full bg-text rounded-full">
+                        <div
+                          className="rounded-full p-1.5"
+                          style={{
+                            width: percentValue,
+                            backgroundColor:
+                              languageColourData[key]?.color || 'bg-brand',
+                          }}
+                        />
+                      </div>
+                      <span className="font-heading text-sm">
+                        {percentValue}
+                      </span>
                     </div>
-                    <span className="font-heading text-sm">{percentValue}</span>
                   </div>
-                </div>
-              );
-            })
+                );
+              })
           : null}
       </div>
     </section>

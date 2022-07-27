@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { DataHelper, DataSectionHeaderProps, isRepo } from '@/types/types';
 import { GoEye, GoRepoForked, GoStar } from 'react-icons/go';
 import { Repository } from '@prisma/client';
+import Link from 'next/link';
 import DataSectionHeader from '../DataSectionHeader/DataSectionHeader';
 
 interface IProps {
@@ -11,26 +12,31 @@ interface IProps {
 
 function RepositoryCard({ data }: { data: Repository }) {
   return (
-    <div className="flex flex-col gap-3 flex-wrap bg-accent rounded-xl px-5 py-4">
-      <p className="font-heading text-xl" style={{ overflowWrap: 'anywhere' }}>
-        {data.name}
-      </p>
-      <p>Last pushed: {new Date(data.pushedAt).toLocaleDateString()}</p>
-      <div className="flex flex-row flex-wrap items-center gap-5">
-        <div className="flex flex-row gap-2">
-          <GoStar size="25px" />
-          <p className="font-heading opacity-75">{data.starsCount}</p>
+    <Link href={data.url} passHref>
+      <a className="flex flex-col gap-3 flex-wrap bg-accent rounded-xl px-5 py-4">
+        <p
+          className="font-heading text-xl"
+          style={{ overflowWrap: 'anywhere' }}
+        >
+          {data.name}
+        </p>
+        <p>Last pushed: {new Date(data.pushedAt).toLocaleDateString()}</p>
+        <div className="flex flex-row flex-wrap items-center gap-5">
+          <div className="flex flex-row gap-2">
+            <GoStar size="25px" />
+            <p className="font-heading opacity-75">{data.starsCount}</p>
+          </div>
+          <div className="flex flex-row gap-2">
+            <GoRepoForked size="25px" />
+            <p className="font-heading opacity-75">{data.forksCount}</p>
+          </div>
+          <div className="flex flex-row gap-2">
+            <GoEye size="25px" />
+            <p className="font-heading opacity-75">{data.watchersCount}</p>
+          </div>
         </div>
-        <div className="flex flex-row gap-2">
-          <GoRepoForked size="25px" />
-          <p className="font-heading opacity-75">{data.forksCount}</p>
-        </div>
-        <div className="flex flex-row gap-2">
-          <GoEye size="25px" />
-          <p className="font-heading opacity-75">{data.watchersCount}</p>
-        </div>
-      </div>
-    </div>
+      </a>
+    </Link>
   );
 }
 
@@ -64,7 +70,11 @@ export default function RecentRepositories({ dataHelper, headerData }: IProps) {
   }, []);
 
   return (
-    <section className={`mx-5 md:mx-10 lg:mx-0 ${loading ? 'opacity-50' : ''}`}>
+    <section
+      className={`mx-5 md:mx-10 lg:mx-0 ${
+        loading ? 'opacity-50 animate-pulse pointer-events-none' : ''
+      }`}
+    >
       <DataSectionHeader {...headerData} />
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full border border-tableBorder rounded-b-2xl border-t-0 px-10 py-7 min-h-[508px]">
         {/* If data is loading in, show a loading skeleton */}

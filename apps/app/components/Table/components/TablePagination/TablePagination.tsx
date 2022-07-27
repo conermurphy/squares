@@ -54,7 +54,7 @@ export default function TablePagination({
     if (type === 'commits') {
       setPageNumber(1);
     }
-  }, [repoData.selectedRepoId]);
+  }, [repoData.selectedRepoId, type]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -67,10 +67,11 @@ export default function TablePagination({
         }
         await dataFetch({
           endpoint: `/api/repositories/commits/${repoData.selectedRepoId}/${pageNumber}`,
-        });
-        setRepoData({
-          ...repoData,
-          repoCommitsLoading: false,
+        }).then(() => {
+          setRepoData({
+            ...repoData,
+            repoCommitsLoading: false,
+          });
         });
       }
       if (type === 'userCommits') {

@@ -33,9 +33,7 @@ function percentageMaker({ data }: IPercentageMakerProps): [string, number][] {
 export default function Languages({ dataHelper, headerData }: IProps) {
   const { pathname } = useRouter();
 
-  const isDashboard = !['/repositories', '/commits', '/settings'].includes(
-    pathname
-  );
+  const isDashboard = !['/user', '/commits', '/settings'].includes(pathname);
 
   const {
     repoData: { selectedRepoId },
@@ -57,20 +55,20 @@ export default function Languages({ dataHelper, headerData }: IProps) {
   return (
     <section
       className={`mx-5 md:mx-10 lg:mx-0 ${
-        !selectedRepoId && loading ? 'opacity-50' : ''
+        !selectedRepoId || loading ? 'opacity-50' : ''
       }`}
     >
       <DataSectionHeader {...headerData} />
       <div
         className={`flex flex-col gap-3 w-full border border-tableBorder rounded-b-2xl border-t-0 px-10 py-7 min-h-[489px] ${
-          (!selectedRepoId && !isDashboard) ||
+          !selectedRepoId ||
           (languagesData && !Object.keys(languagesData)?.length)
             ? 'items-center justify-center'
             : ''
         }`}
       >
         {/* If no repository is selected, prompt the user to select one */}
-        {!selectedRepoId && !isDashboard ? <SelectRepository /> : null}
+        {!selectedRepoId && isDashboard ? <SelectRepository /> : null}
 
         {/* If selected repo and no data and not loading, inform the user */}
         {selectedRepoId &&

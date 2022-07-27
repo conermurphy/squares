@@ -20,7 +20,9 @@ function RepositoryCard({ data }: { data: Repository }) {
         >
           {data.name}
         </p>
-        <p>Last pushed: {new Date(data.pushedAt).toLocaleDateString()}</p>
+        <p>
+          Last pushed: {new Date(data.pushedAt).toLocaleDateString('en-US')}
+        </p>
         <div className="flex flex-row flex-wrap items-center gap-5">
           <div className="flex flex-row gap-2">
             <GoStar size="25px" />
@@ -43,9 +45,9 @@ function RepositoryCard({ data }: { data: Repository }) {
 const skeletonData = {
   id: Math.random(),
   name: 'Repository Name',
-  createdAt: new Date('2022-07-06T05:43:35.000Z'),
-  pushedAt: new Date('2022-07-06T05:43:35.000Z'),
-  updatedAt: new Date('2022-07-06T05:43:35.000Z'),
+  createdAt: '2022-07-06T05:43:35.000Z' as unknown as Date,
+  pushedAt: '2022-07-06T05:43:35.000Z' as unknown as Date,
+  updatedAt: '2022-07-06T05:43:35.000Z' as unknown as Date,
   starCount: 10,
   forksCount: 3,
   watchersCount: 7,
@@ -78,7 +80,7 @@ export default function RecentRepositories({ dataHelper, headerData }: IProps) {
       <DataSectionHeader {...headerData} />
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full border border-tableBorder rounded-b-2xl border-t-0 px-10 py-7 min-h-[508px]">
         {/* If data is loading in, show a loading skeleton */}
-        {loading
+        {loading || !data
           ? Array.from({
               length: 6,
             }).map((_, i) => <RepositoryCard data={skeletonData} key={i} />)

@@ -4,15 +4,38 @@ async function vercel() {
   const [action] = process.argv.slice(2);
 
   try {
-    const apiVersion = action === 'alias' ? 'v2' : 'v13';
-    const url = `https://api.vercel.com/${apiVersion}/deployments${
-      process.env.BUILD_ID ? `/${process.env.BUILD_ID}` : ''
-    }${action === 'alias' ? '/aliases' : ''}`;
+    let url = '';
+    let method = '';
 
-    const alias = `staging.squares.so`;
+    switch (action) {
+      case 'trigger':
+          method = 'POST'
+          url = `https://api.vercel.com/v13/deployments${process.env.BUILD_ID ? `/${process.env.BUILD_ID}` : ''}`
+        break;
+      case 'alias':
+          method = 'POST'
+          url = `https://api.vercel.com/v2/deployments${process.env.BUILD_ID ? `/${process.env.BUILD_ID}` : ''}/aliases`
+        break;
+      case 'getAlias':
+          method = 'GET'
+          url = `https://api.vercel.com/v2/deployments${process.env.BUILD_ID ? `/${process.env.BUILD_ID}` : ''}/aliases`
+        break;
+      case 'removeStagingAlias':
+          method = 'DELETE'
+          url = `https://api.vercel.com/v2/aliases${process.env.STAGING_ALIAS_UID ? `/${process.env.STAGING_ALIAS_UID}` : ''}`
+        break;
+      case 'check':
+          method = 'GET'
+          url = `https://api.vercel.com/v13/deployments${process.env.BUILD_ID ? `/${process.env.BUILD_ID}` : ''}`
+        break;
+      default:
+        break;
+    }
+
+    const stagingURL = `staging.squares.so`;
 
     const config = {
-      method: action === 'check' ? 'GET' : 'POST',
+      method,
       url,
       headers: {
         Authorization: `Bearer ${process.env.VERCEL_TOKEN}`,
@@ -43,11 +66,29 @@ async function vercel() {
         await axios({
           ...config,
           data: {
-            alias,
+            alias: stagingURL,
           },
         }).then((res) => {
           // eslint-disable-next-line
           console.log(res.data.alias);
+        });
+        break;
+
+      case 'getAlias':
+        await axios({
+          ...config
+        }).then((res) => {
+          // eslint-disable-next-line
+          console.log(res.data.aliases.find(({alias}) => alias === stagingURL).uid);
+        })
+        break;
+
+      case 'removeStagingAlias':
+        await axios({
+          ...config,
+        }).then((res) => {
+          // eslint-disable-next-line
+          console.log(res.data.status);
         });
         break;
 

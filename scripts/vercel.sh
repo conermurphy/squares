@@ -33,6 +33,17 @@ then
   echo $ALIAS_OUTCOME
 fi
 
+if [[ ${GITHUB_REF_NAME} == "main" ]]
+then
+  echo "Finding alias ID for staging URL"
+  export STAGING_ALIAS_UID=$(node ./scripts/vercel.js "getAlias")
+  echo $STAGING_ALIAS_UID
+
+  echo "Removing alias for staging"
+  REMOVE_STAGING_ALIAS=$(node ./scripts/vercel.js "removeStagingAlias")
+  echo $REMOVE_STAGING_ALIAS
+fi
+
 if [[ $BUILD_STATUS == "READY" ]]
 then
   exit 0

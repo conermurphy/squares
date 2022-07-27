@@ -10,7 +10,7 @@ export type ErrorMessage = {
   error: string;
 };
 
-export type UserSidebar = {
+export type User = {
   name: string;
   image: string;
   email: string;
@@ -54,7 +54,7 @@ export type ReturnDataType =
   | Repository[]
   | Statistics
   | ErrorMessage
-  | UserSidebar;
+  | User;
 
 export function isPullRequest(data: ReturnDataType): data is PullRequest[] {
   return (data as PullRequest[])[0].state !== undefined;
@@ -72,8 +72,8 @@ export function isRepo(data: ReturnDataType): data is Repository[] {
   return (data as Repository[])[0].forksCount !== undefined;
 }
 
-export function isUserSidebar(data: ReturnDataType): data is UserSidebar {
-  return (data as UserSidebar).image !== undefined;
+export function isUser(data: ReturnDataType): data is User {
+  return (data as User).image !== undefined;
 }
 
 export function isRowCommit(

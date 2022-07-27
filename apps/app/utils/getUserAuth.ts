@@ -18,13 +18,34 @@ export default async function getUserAuth({ session }: IProps) {
     auth: data?.accounts[0].access_token,
   });
 
-  const {
-    data: { login },
-  } = await octokit.rest.users.getAuthenticated();
+  if (
+    data?.login === '' ||
+    data?.lastFetchRepositories.substring(0, 10) !==
+      new Date().toISOString().substring(0, 10)
+  ) {
+    const {
+      data: { login },
+    } = await octokit.rest.users.getAuthenticated();
+
+    await prisma.user.update({
+      where: {
+        id: data?.id,
+      },
+      data: {
+        login,
+      },
+    });
+  }
+
+  const userData = await prisma.user.findUnique({
+    where: {
+      id: data?.id,
+    },
+  });
 
   return {
     octokit,
-    login,
+    login: userData?.login || '',
     userId: data?.id,
   };
 }

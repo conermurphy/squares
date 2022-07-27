@@ -126,7 +126,7 @@ export default function CommitsGraph({ dataHelper, headerData }: IProps) {
         borderWidth: 5,
         fill: false,
         data: finalData ? finalData?.averages : [],
-        radius: 0,
+        radius: 1,
         borderCapStyle: 'round' as const,
         tension: 0.25,
       },
@@ -150,12 +150,14 @@ export default function CommitsGraph({ dataHelper, headerData }: IProps) {
   return (
     <section
       className={`mx-5 md:mx-10 lg:mx-0 ${
-        loading ? 'opacity-50 pointer-events-none animate-pulse' : ''
+        loading ? 'opacity-50 pointer-events-none' : ''
       }`}
     >
       <DataSectionHeader {...headerData} />
-      <div className="relative w-auto border border-tableBorder rounded-b-2xl border-t-0 px-2 md:px-4 lg:px-10 py-7 h-[clamp(500px, 40vw, 700px)]">
-        <Chart type="bar" data={chartData} options={options} />
+      <div className={loading ? 'animate-pulse' : ''}>
+        <div className="relative w-auto border border-tableBorder rounded-b-2xl border-t-0 px-2 md:px-4 lg:px-10 py-7 h-[clamp(500px, 40vw, 700px)]">
+          <Chart type="bar" data={chartData} options={options} />
+        </div>
       </div>
     </section>
   );

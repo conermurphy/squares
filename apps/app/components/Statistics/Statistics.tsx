@@ -46,7 +46,7 @@ const statHelper: StatHelper = {
     icon: <GoGitPullRequest size="23px" />,
   },
   commits: {
-    title: 'Commits',
+    title: 'Commits*',
     icon: <GoGitCommit size="23px" />,
   },
 };
@@ -99,7 +99,7 @@ export default function Statistics({ dataHelper, headerData }: IProps) {
     }
 
     dataLoad();
-  }, [selectedRepoId, repoCommitsLoading]);
+  }, [selectedRepoId]);
 
   return (
     <section

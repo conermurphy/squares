@@ -26,10 +26,14 @@ do
   fi
 done
 
-if [[ $BUILD_STATUS == "READY" ]]
+if [[ $BUILD_STATUS == "READY" && ${GITHUB_REF_NAME} != "main" ]]
 then
   ALIAS_OUTCOME=$(node ./scripts/vercel.js "alias")
   echo $ALIAS_OUTCOME
+fi
+
+if [[ $BUILD_STATUS == "READY" ]]
+then
   exit 0
 fi
 

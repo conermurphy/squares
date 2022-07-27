@@ -28,6 +28,7 @@ done
 
 if [[ $BUILD_STATUS == "READY" && ${GITHUB_REF_NAME} != "main" ]]
 then
+  echo "Running alias script"
   ALIAS_OUTCOME=$(node ./scripts/vercel.js "alias")
   echo $ALIAS_OUTCOME
 fi

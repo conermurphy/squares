@@ -86,7 +86,7 @@ export default function Statistics({ dataHelper, headerData }: IProps) {
   const { loading: prsLoading, fetchData: prsFetchData } = dataHelper[1];
 
   useEffect(() => {
-    if (!selectedRepoId) return;
+    if (!selectedRepoId && !repoCommitsLoading) return;
     async function dataLoad() {
       await Promise.all([
         await prsFetchData({
@@ -99,7 +99,7 @@ export default function Statistics({ dataHelper, headerData }: IProps) {
     }
 
     dataLoad();
-  }, [selectedRepoId]);
+  }, [selectedRepoId, repoCommitsLoading]);
 
   return (
     <section

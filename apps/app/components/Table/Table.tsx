@@ -99,7 +99,7 @@ export default function Table({
               ) : null}
 
               {/* If not loading, there is data but is empty and commits type, show a message saying there is no commits */}
-              {!loading &&
+              {(!loading || !repoData.repoCommitsLoading) &&
               Array.isArray(data) &&
               !data?.length &&
               isTypeCommit ? (

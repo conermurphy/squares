@@ -2,7 +2,7 @@ import Link from 'next/link';
 import React from 'react';
 import Img from 'next/image';
 import { BiLineChart } from 'react-icons/bi';
-import { GoGitCommit, GoRepo, GoSettings } from 'react-icons/go';
+import { GoGitCommit, GoPerson, GoSettings } from 'react-icons/go';
 import { NavLink, UserAccount } from './components';
 
 export default function Sidebar(): JSX.Element {
@@ -20,11 +20,7 @@ export default function Sidebar(): JSX.Element {
       </div>
       <nav className="flex flex-col items-start mt-9 pb-4 gap-4 h-full border-b border-text">
         <NavLink text="Dashboard" href="/" icon={<BiLineChart size="20px" />} />
-        <NavLink
-          text="Repositories"
-          href="/repositories"
-          icon={<GoRepo size="20px" />}
-        />
+        <NavLink text="User" href="/user" icon={<GoPerson size="20px" />} />
         <div className="grow w-full">
           <NavLink
             text="Commits"

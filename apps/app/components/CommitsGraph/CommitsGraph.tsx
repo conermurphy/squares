@@ -10,6 +10,8 @@ import {
   LineElement,
   Legend,
   Tooltip,
+  LineController,
+  BarController,
 } from 'chart.js';
 import { round } from '@/utils';
 import DataSectionHeader from '../DataSectionHeader/DataSectionHeader';
@@ -26,7 +28,9 @@ ChartJS.register(
   PointElement,
   LineElement,
   Legend,
-  Tooltip
+  Tooltip,
+  LineController,
+  BarController
 );
 
 export default function CommitsGraph({ dataHelper, headerData }: IProps) {

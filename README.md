@@ -1,77 +1,58 @@
-# Turborepo starter with npm
+<img src="assets/squares-app-signin.png" title="Header Banner" alt="Header Banner"/>&emsp;
 
-This is an official starter turborepo.
+# Squares
 
-## What's inside?
+Welcome to Squares, a GitHub analytics tool that lets you explore and visualise your GitHub data.
 
-This turborepo uses [npm](https://www.npmjs.com/) as a package manager. It includes the following packages/apps:
+Using Squares you can see an overview of your commits and repositories in various ways and the stats about them.
 
-### Apps and Packages
+[Check it out for free here.](https://app.squares.so/auth/signin)
 
-- `docs`: a [Next.js](https://nextjs.org) app
-- `web`: another [Next.js](https://nextjs.org) app
-- `ui`: a stub React component library shared by both `web` and `docs` applications
-- `eslint-config-custom`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `tsconfig`: `tsconfig.json`s used throughout the monorepo
+## Tech Stack 👩‍💻
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+Here is the tech used for Squares
 
-### Utilities
+### Frontend
 
-This turborepo has some additional tools already setup for you:
+- React
+  - Next.js
+- TailwindCSS
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+### Backend
 
-## Setup
+- Prisma
+- PlanetScale
 
-This repository is used in the `npx create-turbo@latest` command, and selected when choosing which package manager you wish to use with your monorepo (npm).
+## Local Setup
 
-### Build
+To run the project locally, do the following steps:
 
-To build all apps and packages, run the following command:
+- Clone the repo and npm install from the root of the monorepo
+- [Sign up for an account with PlanetScale](https://planetscale.com) and create a new database
+- Create a GitHub OAuth App
+- Create a `.env` file at `~/apps/app`, this will contain the various variables required for the app to run. (See example and explanation below)
+- Open a connection to PlanetScale in one terminal window.
+- Start Squares using `npm run dev`.
 
-```
-cd my-turborepo
-npm run build
-```
+Read a [getting started guide for Prisma and PlanetSclae here.](https://docs.planetscale.com/docs/tutorials/prisma-quickstart)
 
-### Develop
-
-To develop all apps and packages, run the following command:
+### Example Env for apps/app
 
 ```
-cd my-turborepo
-npm run dev
+DATABASE_URL -> This is your localhost planetscale connection URL
+GITHUB_ID -> ID for a GitHub OAuth App
+GITHUB_SECRET -> Secret for the GitHub OAuth App above
+NEXTAUTH_URL -> localhost URL for apps/app
+NEXTAUTH_SECRET -> Generated random string for Next Auth
+NEXT_PUBLIC_RESULTS_PER_PAGE -> Number of results to show per page for commits and repo tables.
 ```
 
-### Remote Caching
+Read more about the [`NEXTAUTH` secrets here on their documentation](https://next-auth.js.org/configuration/options)
 
-Turborepo can use a technique known as [Remote Caching](https://turborepo.org/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
+## Contributing 👥
 
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
+Any PRs or Issues raised are appreciated greatly. Please feel free to contribute if you would like to. 😄
 
-```
-cd my-turborepo
-npx turbo login
-```
+---
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your turborepo:
-
-```
-npx turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Pipelines](https://turborepo.org/docs/core-concepts/pipelines)
-- [Caching](https://turborepo.org/docs/core-concepts/caching)
-- [Remote Caching](https://turborepo.org/docs/core-concepts/remote-caching)
-- [Scoped Tasks](https://turborepo.org/docs/core-concepts/scopes)
-- [Configuration Options](https://turborepo.org/docs/reference/configuration)
-- [CLI Usage](https://turborepo.org/docs/reference/command-line-reference)
+Squares was made as an entry to the [PlanetScale](https://planetscale.com/?utm_source=hashnode&utm_medium=hackathon&utm_campaign=announcement_article) and [Hashnode](https://hashnode.com/?source=planetscale_hackathon_announcement) hackathon in July 2022.

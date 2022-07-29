@@ -28,6 +28,7 @@ export default function UserAccount() {
           login: usersData.login,
           name: usersData.name,
           image: usersData.image,
+          lastFetchRepositories: usersData.lastFetchRepositories,
         });
       }
     }

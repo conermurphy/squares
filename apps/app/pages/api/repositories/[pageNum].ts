@@ -89,6 +89,8 @@ export default async function repos(req: NextApiRequest, res: NextApiResponse) {
               });
             })
           );
+
+          await updateLastFetchDate;
         }
 
         // Return all of the repo data from Prisma for the user
@@ -104,9 +106,6 @@ export default async function repos(req: NextApiRequest, res: NextApiResponse) {
             parseInt(process.env.NEXT_PUBLIC_RESULTS_PER_PAGE),
           take: parseInt(process.env.NEXT_PUBLIC_RESULTS_PER_PAGE),
         });
-
-        // Update the lastFetchData for the user's repositories
-        await updateLastFetchDate;
 
         return res.status(200).json(repoData);
       } catch (e) {

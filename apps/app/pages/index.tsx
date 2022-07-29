@@ -51,8 +51,8 @@ export default function Home() {
   return (
     <>
       <SEO
-        metaTitle="Repositories"
-        metaDescription="See all your GitHub repositories easier than ever."
+        metaTitle="Dashboard"
+        metaDescription="See all your GitHub data easier than ever."
       />
       <div className="flex flex-col gap-9 max-w-full">
         <h1 className="text-4xl font-heading mx-5 md:mx-10 lg:m-0">

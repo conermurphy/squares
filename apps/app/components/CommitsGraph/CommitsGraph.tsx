@@ -13,7 +13,8 @@ import {
   LineController,
   BarController,
 } from 'chart.js';
-import { round } from '@/utils';
+import { round, useDataLengths } from '@/utils';
+import { GoInfo } from 'react-icons/go';
 import DataSectionHeader from '../DataSectionHeader/DataSectionHeader';
 
 interface IProps {
@@ -36,6 +37,10 @@ ChartJS.register(
 export default function CommitsGraph({ dataHelper, headerData }: IProps) {
   const { loading, data, fetchData: commitsFetchData } = dataHelper;
 
+  const { userCommitsLength } = useDataLengths({
+    type: 'userCommits',
+  });
+
   useEffect(() => {
     const fetchData = async () => {
       await commitsFetchData({
@@ -44,7 +49,7 @@ export default function CommitsGraph({ dataHelper, headerData }: IProps) {
     };
 
     fetchData();
-  }, []);
+  }, [userCommitsLength]);
 
   const days = Array.from({ length: 8 })
     .map((_, i) => {
@@ -62,6 +67,7 @@ export default function CommitsGraph({ dataHelper, headerData }: IProps) {
 
   const dataWithCount =
     Array.isArray(data) &&
+    data?.length &&
     isCommit(data) &&
     data.reduce((acc, cur) => {
       const { commitDate } = cur;
@@ -117,7 +123,7 @@ export default function CommitsGraph({ dataHelper, headerData }: IProps) {
 
   const skeletonData = {
     lables: Array.from({ length: 8 }).map((_, i) => `Day ${i}`),
-    counts: Array.from({ length: 8 }).map((_) => round(Math.random() * 10, 0)),
+    counts: [2, 6, 5, 3, 5, 6, 2, 9],
   };
 
   const chartData = {
@@ -129,7 +135,7 @@ export default function CommitsGraph({ dataHelper, headerData }: IProps) {
         borderColor: 'hsla(138, 25%, 56%, 1)',
         borderWidth: 5,
         fill: false,
-        data: finalData ? finalData?.averages : [],
+        data: finalData ? finalData.averages : [],
         radius: 1,
         borderCapStyle: 'round' as const,
         tension: 0.25,
@@ -160,7 +166,18 @@ export default function CommitsGraph({ dataHelper, headerData }: IProps) {
       <DataSectionHeader {...headerData} />
       <div className={loading ? 'animate-pulse' : ''}>
         <div className="relative w-auto border border-tableBorder rounded-b-2xl border-t-0 px-2 md:px-4 lg:px-10 py-7 h-[clamp(500px, 40vw, 700px)]">
-          <Chart type="bar" data={chartData} options={options} />
+          {loading || (Array.isArray(data) && data?.length) ? (
+            <Chart type="bar" data={chartData} options={options} />
+          ) : (
+            <div className="flex flex-col items-center justify-center gap-4 w-full">
+              <div className="rounded-full bg-accent p-4">
+                <GoInfo size="35px" />
+              </div>
+              <p className="font-heading text-xl sm:text-2xl text-center">
+                No data could be found, please refresh and try again.
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </section>

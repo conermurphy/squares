@@ -74,6 +74,8 @@ export default async function prs(req: NextApiRequest, res: NextApiResponse) {
               });
             })
           );
+
+          await updateLastFetchDate;
         }
 
         const prData = await prisma.pullRequest.findMany({
@@ -81,9 +83,6 @@ export default async function prs(req: NextApiRequest, res: NextApiResponse) {
             repositoryId: parseInt(id),
           },
         });
-
-        // Update the lastFetchData for the repo's prs
-        await updateLastFetchDate;
 
         return res.status(200).json(prData);
       } catch (e) {

@@ -15,17 +15,17 @@ export default async function contributors(
 
   const { octokit, login } = await getUserAuth({ session });
 
+  const { repoId: id } = req.query;
+
+  if (Array.isArray(id) || id === undefined) {
+    return res.status(500).json({
+      error: 'Query parameter is not the expected type of "string"',
+    });
+  }
+
   switch (req.method) {
     case 'GET':
       try {
-        const { repoId: id } = req.query;
-
-        if (Array.isArray(id) || id === undefined) {
-          return res.status(500).json({
-            error: 'Query parameter is not the expected type of "string"',
-          });
-        }
-
         // Check if we should fetch new data from GitHub or return existing from Prisma/PlanetScale
         const { shouldFetchNewData, updateLastFetchDate } =
           await getLastFetchDate({
@@ -87,6 +87,10 @@ export default async function contributors(
               });
             })
           );
+
+          await updateLastFetchDate;
+
+          return res.status(200).json(transformedContributors);
         }
 
         const contributorsData = await prisma.repository.findUnique({
@@ -98,12 +102,22 @@ export default async function contributors(
           },
         });
 
-        // Update the lastFetchData for the repo's contributors
-        await updateLastFetchDate;
-
         return res.status(200).json(contributorsData?.contributors);
       } catch (e) {
-        return res.status(500).json({ error: 'Error fetching contributors' });
+        try {
+          const contributorsData = await prisma.repository.findUnique({
+            where: {
+              id: parseInt(id),
+            },
+            include: {
+              contributors: true,
+            },
+          });
+
+          return res.status(200).json(contributorsData?.contributors);
+        } catch (err) {
+          return res.status(500).json({ error: 'Error fetching contributors' });
+        }
       }
     default:
       res.setHeader('Allow', ['GET']);

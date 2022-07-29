@@ -17,23 +17,31 @@ export default async function userCommitsCount(
   // Get data about the user and octokit to query GitHub.
   const { login } = await getUserAuth({ session });
 
+  const sinceDate = getDaysFromDate({
+    days: 7,
+  });
+
   switch (req.method) {
     case 'GET':
       try {
-        const sinceDate = getDaysFromDate({
-          days: 7,
-        });
+        const maxTries = parseInt(process.env.API_MAX_RETRY);
+        let count = 0;
+        let userCommitsLength;
 
-        const userCommitsLength = await prisma.commit.count({
-          where: {
-            commitDate: {
-              gte: sinceDate,
+        while (!userCommitsLength || count < maxTries) {
+          userCommitsLength = await prisma.commit.count({
+            where: {
+              commitDate: {
+                gte: sinceDate,
+              },
+              commitAuthor: {
+                login,
+              },
             },
-            commitAuthor: {
-              login,
-            },
-          },
-        });
+          });
+
+          count += 1;
+        }
 
         return res.status(200).json(userCommitsLength);
       } catch (e) {

@@ -15,6 +15,7 @@ export type User = {
   image: string;
   email: string;
   login: string;
+  lastFetchRepositories: string;
 };
 
 export interface DataSectionHeaderProps {

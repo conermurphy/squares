@@ -14,6 +14,7 @@ type UserData = {
   image: string;
   login: string;
   email: string;
+  lastFetchRepositories: string;
 };
 
 type ContextProps = {
@@ -27,6 +28,7 @@ const UserContext = createContext<ContextProps>({
     image: '',
     login: '',
     email: '',
+    lastFetchRepositories: '',
   },
   setUserData() {},
 });
@@ -37,6 +39,7 @@ function UserProvider({ children }: ProviderProps) {
     image: '',
     login: '',
     email: '',
+    lastFetchRepositories: '',
   });
 
   const value = useMemo(

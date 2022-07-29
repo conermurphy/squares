@@ -44,6 +44,10 @@ export default function TablePagination({
     const fetchData = async () => {
       if (type === 'repositories') {
         await dataFetch({ endpoint: `/api/repositories/${pageNumber}` });
+        setRepoData({
+          ...repoData,
+          totalRepos: reposLength,
+        });
       }
     };
 

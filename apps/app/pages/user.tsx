@@ -4,11 +4,8 @@ import { handleAuthRedirect, useFetchData } from '@/utils';
 import { CommitsGraph, Languages, RecentRepositories, SEO } from '@/components';
 import { useEffect } from 'react';
 import { GoCode, GoGitCommit, GoRepo } from 'react-icons/go';
-import { useUser } from '@/contexts';
 
 export default function User() {
-  const { userData } = useUser();
-
   const dataHelper = {
     commits: useFetchData({
       method: 'GET',
@@ -40,9 +37,9 @@ export default function User() {
         metaDescription="A breakdown of your commits, languages and recent repositories"
       />
       <div className="flex flex-col gap-9 max-w-full">
-        <h1 className="text-4xl font-heading mx-5 md:mx-10 lg:m-0">{`Welcome${
-          userData.name ? `, ${userData?.name}` : ''
-        }`}</h1>
+        <h1 className="text-4xl font-heading mx-5 md:mx-10 lg:m-0">
+          Your Stats
+        </h1>
         <CommitsGraph
           headerData={{
             heading: 'Your Commits',

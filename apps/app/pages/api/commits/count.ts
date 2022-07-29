@@ -28,7 +28,7 @@ export default async function userCommitsCount(
         let count = 0;
         let userCommitsLength;
 
-        while (count < maxTries) {
+        while (!userCommitsLength || count < maxTries) {
           userCommitsLength = await prisma.commit.count({
             where: {
               commitDate: {
@@ -45,7 +45,22 @@ export default async function userCommitsCount(
 
         return res.status(200).json(userCommitsLength);
       } catch (e) {
-        return res.status(500).json({ error: 'Error fetching repos' });
+        try {
+          const userCommitsLength = await prisma.commit.count({
+            where: {
+              commitDate: {
+                gte: sinceDate,
+              },
+              commitAuthor: {
+                login,
+              },
+            },
+          });
+
+          return res.status(200).json(userCommitsLength);
+        } catch (err) {
+          return res.status(500).json({ error: 'Error fetching repos' });
+        }
       }
     default:
       res.setHeader('Allow', ['GET']);

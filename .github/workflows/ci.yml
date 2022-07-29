@@ -68,4 +68,5 @@ jobs:
         env:
           REPO_ID: ${{ secrets.REPO_ID }}
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_TEAM_ID: ${{ secrets.VERCEL_TEAM_ID }}
         run: ./scripts/vercel.sh

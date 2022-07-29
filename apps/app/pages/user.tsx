@@ -16,6 +16,9 @@ export default function User() {
     languages: useFetchData({
       method: 'GET',
     }),
+    repositories: useFetchData({
+      method: 'GET',
+    }),
     recentRepos: useFetchData({
       method: 'GET',
     }),
@@ -33,8 +36,8 @@ export default function User() {
   return (
     <>
       <SEO
-        metaTitle="Commits"
-        metaDescription="All of your GitHub commits for the last 7 days"
+        metaTitle="User"
+        metaDescription="A breakdown of your commits, languages and recent repositories"
       />
       <div className="flex flex-col gap-9 max-w-full">
         <h1 className="text-4xl font-heading mx-5 md:mx-10 lg:m-0">{`Welcome${

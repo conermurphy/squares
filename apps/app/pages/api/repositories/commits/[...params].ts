@@ -1,6 +1,11 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from 'next-auth/react';
-import { getDaysFromDate, getLastFetchDate, getUserAuth } from '@/utils';
+import {
+  fetchCommitData,
+  getDaysFromDate,
+  getLastFetchDate,
+  getUserAuth,
+} from '@/utils';
 import { prisma } from '@/lib/prisma';
 
 export default async function commits(
@@ -15,19 +20,19 @@ export default async function commits(
 
   const { octokit, login, userId = '' } = await getUserAuth({ session });
 
+  const { params } = req.query;
+
+  if (!Array.isArray(params) || params === undefined) {
+    return res.status(500).json({
+      error: 'Query parameter is not the expected type of "array"',
+    });
+  }
+
+  const [id, pageNumber = '1'] = params;
+
   switch (req.method) {
     case 'GET':
       try {
-        const { params } = req.query;
-
-        if (!Array.isArray(params) || params === undefined) {
-          return res.status(500).json({
-            error: 'Query parameter is not the expected type of "array"',
-          });
-        }
-
-        const [id, pageNumber = '1'] = params;
-
         // Check if we should fetch new data from GitHub or return existing from Prisma/PlanetScale
         const { shouldFetchNewData, updateLastFetchDate } =
           await getLastFetchDate({
@@ -60,116 +65,49 @@ export default async function commits(
             days: 21,
           });
 
-          // list commits in a repo
-          const transformedCommits = await octokit.paginate(
-            octokit.rest.repos.listCommits,
-            {
-              owner: login,
-              repo: repoData?.name || '',
-              per_page: 100,
-              since: commitFetchDate.toISOString(),
-            },
-            (response) =>
-              response.data.map((commit) => ({
-                id: commit.node_id,
-                sha: commit.sha,
-                message: commit.commit.message,
-                url: commit.html_url,
-                commitDate: commit.commit.author?.date || '',
-                repositoryId: parseInt(id),
-                userId,
-                commitAuthorId: commit.author?.id,
-                author: {
-                  id: commit.author?.id || 0,
-                  nodeId: commit.author?.node_id,
-                  login: commit.author?.login,
-                  imageUrl: commit.author?.avatar_url,
-                  url: commit.author?.html_url,
-                },
-              }))
-          );
+          await fetchCommitData({
+            octokit,
+            login,
+            repoName: repoData?.name,
+            repoId: id,
+            sinceDate: commitFetchDate.toISOString(),
+            userId,
+          });
 
-          const commitsWithStats = await Promise.all(
-            transformedCommits.map(async (commit) => {
-              const { data } = await octokit.rest.repos.getCommit({
-                owner: login,
-                repo: repoData?.name || '',
-                ref: commit.sha,
-              });
-
-              return {
-                id: commit.id,
-                sha: commit.sha,
-                message: commit.message,
-                url: commit.url,
-                commitDate: commit.commitDate,
-                repositoryId: parseInt(id),
-                userId,
-                commitAuthorId: commit.author?.id,
-                additions: data.stats?.additions || 0,
-                deletions: data.stats?.deletions || 0,
-              };
-            })
-          );
-
-          await Promise.all(
-            commitsWithStats.map(async (commit) => {
-              await prisma?.commit.upsert({
-                where: {
-                  id: commit.id,
-                },
-                update: commit,
-                create: commit,
-              });
-            })
-          );
-
-          await Promise.all(
-            transformedCommits.map(async (commit) => {
-              await prisma.commit.update({
-                where: {
-                  id: commit.id,
-                },
-                data: {
-                  commitAuthor: {
-                    connectOrCreate: {
-                      where: {
-                        id: commit.author.id,
-                      },
-                      create: { ...commit.author },
-                    },
-                  },
-                },
-              });
-            })
-          );
+          // Update the lastFetchData for the repo's commits
+          await updateLastFetchDate;
         }
 
         const sinceDate = getDaysFromDate({
           days: 21,
         });
 
-        const commitData = await prisma.commit.findMany({
-          where: {
-            repositoryId: parseInt(id),
-            commitDate: {
-              gte: sinceDate,
-            },
-          },
-          orderBy: {
-            commitDate: 'desc',
-          },
-          include: {
-            repository: true,
-          },
-          skip:
-            (parseInt(pageNumber) - 1) *
-            parseInt(process.env.NEXT_PUBLIC_RESULTS_PER_PAGE),
-          take: parseInt(process.env.NEXT_PUBLIC_RESULTS_PER_PAGE),
-        });
+        const maxTries = parseInt(process.env.API_MAX_RETRY);
+        let count = 0;
+        let commitData;
 
-        // Update the lastFetchData for the repo's commits
-        await updateLastFetchDate;
+        while (!commitData || count < maxTries) {
+          commitData = await prisma.commit.findMany({
+            where: {
+              repositoryId: parseInt(id),
+              commitDate: {
+                gte: sinceDate,
+              },
+            },
+            orderBy: {
+              commitDate: 'desc',
+            },
+            include: {
+              repository: true,
+            },
+            skip:
+              (parseInt(pageNumber) - 1) *
+              parseInt(process.env.NEXT_PUBLIC_RESULTS_PER_PAGE),
+            take: parseInt(process.env.NEXT_PUBLIC_RESULTS_PER_PAGE),
+          });
+
+          count += 1;
+        }
 
         return res.status(200).json(commitData);
       } catch (e) {

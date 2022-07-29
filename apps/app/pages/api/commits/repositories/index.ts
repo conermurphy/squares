@@ -84,6 +84,8 @@ export default async function commitsRepos(
               });
             })
           );
+
+          await updateLastFetchDate;
         }
 
         // Get today's date minus 7
@@ -106,9 +108,6 @@ export default async function commitsRepos(
             lastFetchDates: true,
           },
         });
-
-        // Update the lastFetchData for the user's repositories
-        await updateLastFetchDate;
 
         return res.status(200).json(repoData);
       } catch (e) {

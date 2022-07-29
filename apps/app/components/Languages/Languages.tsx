@@ -52,16 +52,27 @@ export default function Languages({ dataHelper, headerData }: IProps) {
     Java: 7894,
   };
 
+  const languagePercentages =
+    languagesData && !loading
+      ? percentageMaker({ data: languagesData })
+      : percentageMaker({ data: skeletonData });
+
+  const languagesToDisplay =
+    languagePercentages &&
+    languagePercentages
+      .sort(([, aVal], [, bVal]) => (aVal < bVal ? 1 : -1))
+      .splice(0, 6);
+
   return (
     <section
       className={`mx-5 md:mx-10 lg:mx-0 ${
-        !selectedRepoId || loading ? 'opacity-50' : ''
+        (!selectedRepoId && isDashboard) || loading ? 'opacity-50' : ''
       }`}
     >
       <DataSectionHeader {...headerData} />
       <div
         className={`flex flex-col gap-3 w-full border border-tableBorder rounded-b-2xl border-t-0 px-10 py-7 min-h-[489px] ${
-          !selectedRepoId ||
+          (!selectedRepoId && isDashboard) ||
           (languagesData && !Object.keys(languagesData)?.length)
             ? 'items-center justify-center'
             : ''
@@ -80,7 +91,7 @@ export default function Languages({ dataHelper, headerData }: IProps) {
 
         {/* If data is loading in, show a loading skeleton */}
         {loading
-          ? percentageMaker({ data: skeletonData }).map(([key, value], i) => {
+          ? languagesToDisplay.map(([key, value], i) => {
               const percentValue = `${value}%`;
 
               return (
@@ -108,34 +119,71 @@ export default function Languages({ dataHelper, headerData }: IProps) {
           : null}
 
         {/* If data has loaded, show the actual data */}
-        {languagesData && !loading
-          ? percentageMaker({ data: languagesData })
-              .sort(([, aVal], [, bVal]) => (aVal < bVal ? 1 : -1))
-              .map(([key, value], i) => {
-                const percentValue = `${value}%`;
+        {(!isDashboard || (selectedRepoId && isDashboard)) &&
+        !loading &&
+        languagesToDisplay ? (
+          <>
+            {languagesToDisplay.map(([key, value], i) => {
+              const percentValue = `${value}%`;
 
-                return (
-                  <div key={i} className="flex flex-col gap-2">
-                    <span>{key}</span>
-                    <div className="flex flex-row items-center gap-4">
-                      <div className="flex flex-row items-center w-full bg-text rounded-full">
+              return (
+                <div key={i} className="flex flex-col gap-2">
+                  <span>{key}</span>
+                  <div className="flex flex-row items-center gap-4">
+                    <div className="flex flex-row items-center w-full bg-text rounded-full">
+                      <div
+                        className="rounded-full p-1.5"
+                        style={{
+                          width: percentValue,
+                          backgroundColor:
+                            languageColourData[key]?.color || 'bg-brand',
+                        }}
+                      />
+                    </div>
+                    <span className="font-heading text-sm">{percentValue}</span>
+                  </div>
+                </div>
+              );
+            })}
+
+            {languagePercentages && languagePercentages?.length ? (
+              <div className="flex flex-col gap-2">
+                <span>Other</span>
+                <div className="flex flex-row items-center gap-4">
+                  <div className="flex flex-row items-center w-full bg-text rounded-full">
+                    {languagePercentages.map(([key, value], i, arr) => {
+                      const percentValue = `${value}%`;
+
+                      return (
                         <div
-                          className="rounded-full p-1.5"
+                          className={`p-1.5 ${
+                            i === 0 ? 'rounded-l-full' : ''
+                          } ${i === arr.length - 1 ? 'rounded-r-full' : ''}`}
+                          key={`${key}${value}`}
                           style={{
                             width: percentValue,
                             backgroundColor:
                               languageColourData[key]?.color || 'bg-brand',
                           }}
                         />
-                      </div>
-                      <span className="font-heading text-sm">
-                        {percentValue}
-                      </span>
-                    </div>
+                      );
+                    })}
                   </div>
-                );
-              })
-          : null}
+                  <span className="font-heading text-sm">
+                    {`${round(
+                      languagePercentages.reduce(
+                        // eslint-disable-next-line
+                    (acc, [_, val]) => (acc += val),
+                        0
+                      ),
+                      2
+                    )}%`}
+                  </span>
+                </div>
+              </div>
+            ) : null}
+          </>
+        ) : null}
       </div>
     </section>
   );

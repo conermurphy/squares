@@ -5,7 +5,7 @@ import { SessionProvider } from 'next-auth/react';
 import { MobileNavBar } from '@/components/Sidebar/components';
 import { useRouter } from 'next/router';
 import { RepositoryProvider, UserProvider } from '@/contexts';
-import { Sidebar } from '../components';
+import { AppFooter, Sidebar } from '../components';
 
 export default function MyApp({
   Component,
@@ -23,6 +23,7 @@ export default function MyApp({
               <div className="flex flex-col items-center my-5 md:mx-10 lg:mx-20 lg:my-10 w-full mb-32 overflow-x-hidden">
                 <div className="max-w-7xl w-full">
                   <Component {...pageProps} />
+                  <AppFooter />
                 </div>
               </div>
               <MobileNavBar />

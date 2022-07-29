@@ -24,6 +24,7 @@ export default async function users(req: NextApiRequest, res: NextApiResponse) {
             image: true,
             name: true,
             email: true,
+            lastFetchRepositories: true,
           },
         });
 

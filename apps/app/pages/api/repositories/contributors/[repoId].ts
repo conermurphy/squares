@@ -93,12 +93,19 @@ export default async function contributors(
           return res.status(200).json(transformedContributors);
         }
 
-        const maxTries = parseInt(process.env.API_MAX_RETRY);
-        let count = 0;
-        let contributorsData;
+        const contributorsData = await prisma.repository.findUnique({
+          where: {
+            id: parseInt(id),
+          },
+          include: {
+            contributors: true,
+          },
+        });
 
-        while (!contributorsData || count < maxTries) {
-          contributorsData = await prisma.repository.findUnique({
+        return res.status(200).json(contributorsData?.contributors);
+      } catch (e) {
+        try {
+          const contributorsData = await prisma.repository.findUnique({
             where: {
               id: parseInt(id),
             },
@@ -106,11 +113,11 @@ export default async function contributors(
               contributors: true,
             },
           });
-          count += 1;
+
+          return res.status(200).json(contributorsData?.contributors);
+        } catch (err) {
+          return res.status(500).json({ error: 'Error fetching contributors' });
         }
-        return res.status(200).json(contributorsData?.contributors);
-      } catch (e) {
-        return res.status(500).json({ error: 'Error fetching contributors' });
       }
     default:
       res.setHeader('Allow', ['GET']);

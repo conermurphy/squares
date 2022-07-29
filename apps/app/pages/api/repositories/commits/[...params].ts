@@ -30,6 +30,10 @@ export default async function commits(
 
   const [id, pageNumber = '1'] = params;
 
+  const sinceDate = getDaysFromDate({
+    days: 21,
+  });
+
   switch (req.method) {
     case 'GET':
       try {
@@ -78,16 +82,29 @@ export default async function commits(
           await updateLastFetchDate;
         }
 
-        const sinceDate = getDaysFromDate({
-          days: 21,
+        const commitData = await prisma.commit.findMany({
+          where: {
+            repositoryId: parseInt(id),
+            commitDate: {
+              gte: sinceDate,
+            },
+          },
+          orderBy: {
+            commitDate: 'desc',
+          },
+          include: {
+            repository: true,
+          },
+          skip:
+            (parseInt(pageNumber) - 1) *
+            parseInt(process.env.NEXT_PUBLIC_RESULTS_PER_PAGE),
+          take: parseInt(process.env.NEXT_PUBLIC_RESULTS_PER_PAGE),
         });
 
-        const maxTries = parseInt(process.env.API_MAX_RETRY);
-        let count = 0;
-        let commitData;
-
-        while (!commitData || count < maxTries) {
-          commitData = await prisma.commit.findMany({
+        return res.status(200).json(commitData);
+      } catch (e) {
+        try {
+          const commitData = await prisma.commit.findMany({
             where: {
               repositoryId: parseInt(id),
               commitDate: {
@@ -106,12 +123,10 @@ export default async function commits(
             take: parseInt(process.env.NEXT_PUBLIC_RESULTS_PER_PAGE),
           });
 
-          count += 1;
+          return res.status(200).json(commitData);
+        } catch (err) {
+          return res.status(500).json({ error: 'Error fetching commits' });
         }
-
-        return res.status(200).json(commitData);
-      } catch (e) {
-        return res.status(500).json({ error: 'Error fetching commits' });
       }
     default:
       res.setHeader('Allow', ['GET']);

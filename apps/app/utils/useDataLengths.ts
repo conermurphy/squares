@@ -21,24 +21,24 @@ export default function useDataLengths({ type }: IProps) {
     }),
   };
 
-  useEffect(() => {
-    async function fetchData() {
-      if (type !== 'userCommits') {
-        await Promise.all([
-          await dataHelper.repos.fetchData({
-            endpoint: `/api/repositories/count`,
-          }),
-          await dataHelper.commits.fetchData({
-            endpoint: `/api/repositories/commits/count/${repoData.selectedRepoId}`,
-          }),
-        ]);
-      } else {
-        await dataHelper.userCommits.fetchData({
-          endpoint: `/api/commits/count/`,
-        });
-      }
+  async function fetchData() {
+    if (type !== 'userCommits') {
+      await Promise.all([
+        await dataHelper.repos.fetchData({
+          endpoint: `/api/repositories/count`,
+        }),
+        await dataHelper.commits.fetchData({
+          endpoint: `/api/repositories/commits/count/${repoData.selectedRepoId}`,
+        }),
+      ]);
+    } else {
+      await dataHelper.userCommits.fetchData({
+        endpoint: `/api/commits/count/`,
+      });
     }
+  }
 
+  useEffect(() => {
     fetchData();
   }, [repoData.selectedRepoId]);
 
@@ -51,5 +51,6 @@ export default function useDataLengths({ type }: IProps) {
       typeof dataHelper.userCommits.data === 'number'
         ? dataHelper.userCommits.data
         : 0,
+    refetchData: fetchData,
   };
 }

@@ -16,9 +16,10 @@ export default function TablePagination({
 
   const { repoData, setRepoData } = useRepository();
 
-  const { reposLength, commitsLength, userCommitsLength } = useDataLengths({
-    type,
-  });
+  const { reposLength, commitsLength, userCommitsLength, refetchData } =
+    useDataLengths({
+      type,
+    });
 
   let dataLength = 0;
 
@@ -36,7 +37,7 @@ export default function TablePagination({
       break;
   }
 
-  const totalPages = Math.round(
+  const totalPages = Math.ceil(
     dataLength / parseInt(process.env.NEXT_PUBLIC_RESULTS_PER_PAGE)
   );
 
@@ -77,6 +78,10 @@ export default function TablePagination({
             repoCommitsLoading: false,
           });
         });
+
+        if (!dataLength) {
+          await refetchData();
+        }
       }
       if (type === 'userCommits') {
         await dataFetch({
@@ -86,7 +91,7 @@ export default function TablePagination({
     };
 
     fetchData();
-  }, [pageNumber, repoData.selectedRepoId]);
+  }, [pageNumber, repoData.selectedRepoId, dataLength]);
 
   const buttonStyles =
     'border border-text px-4 py-2 rounded text-sm disabled:opacity-50 disabled:cursor-not-allowed';
@@ -109,7 +114,7 @@ export default function TablePagination({
       <button
         type="button"
         className={buttonStyles}
-        disabled={pageNumber === totalPages || !dataLength}
+        disabled={pageNumber === totalPages || !dataLength || totalPages <= 1}
         onClick={() => {
           setPageNumber(pageNumber + 1);
         }}

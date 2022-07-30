@@ -88,7 +88,7 @@ export default async function commits(
                     id: commit.node_id,
                     sha: commit.sha,
                     message: commit.commit.message,
-                    url: commit.url,
+                    url: commit.html_url,
                     commitDate: commit.commit.author?.date || '',
                     repositoryId: parseInt(id),
                     userId,

@@ -64,17 +64,12 @@ export default async function commits(
             },
           });
 
-          const commitFetchDate = getDaysFromDate({
-            date: repoData?.lastFetchDates[0].commits,
-            days: 21,
-          });
-
           await fetchCommitData({
             octokit,
             login,
             repoName: repoData?.name,
             repoId: id,
-            sinceDate: commitFetchDate.toISOString(),
+            sinceDate: sinceDate.toISOString(),
             userId,
           });
 
@@ -103,30 +98,7 @@ export default async function commits(
 
         return res.status(200).json(commitData);
       } catch (e) {
-        try {
-          const commitData = await prisma.commit.findMany({
-            where: {
-              repositoryId: parseInt(id),
-              commitDate: {
-                gte: sinceDate,
-              },
-            },
-            orderBy: {
-              commitDate: 'desc',
-            },
-            include: {
-              repository: true,
-            },
-            skip:
-              (parseInt(pageNumber) - 1) *
-              parseInt(process.env.NEXT_PUBLIC_RESULTS_PER_PAGE),
-            take: parseInt(process.env.NEXT_PUBLIC_RESULTS_PER_PAGE),
-          });
-
-          return res.status(200).json(commitData);
-        } catch (err) {
-          return res.status(500).json({ error: 'Error fetching commits' });
-        }
+        return res.status(500).json({ error: 'Error fetching commits' });
       }
     default:
       res.setHeader('Allow', ['GET']);

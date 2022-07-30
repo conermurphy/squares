@@ -28,7 +28,7 @@ export default async function userCommitsCount(
         let count = 0;
         let userCommitsLength;
 
-        while (!userCommitsLength || count < maxTries) {
+        while (count < maxTries) {
           userCommitsLength = await prisma.commit.count({
             where: {
               commitDate: {

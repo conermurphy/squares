@@ -34,14 +34,6 @@ export default async function fetchCommitData({
         commitDate: commit.commit.author?.date || '',
         repositoryId: parseInt(repoId),
         userId,
-        commitAuthorId: commit.author?.id,
-        author: {
-          id: commit.author?.id || 0,
-          nodeId: commit.author?.node_id,
-          login: commit.author?.login,
-          imageUrl: commit.author?.avatar_url,
-          url: commit.author?.html_url,
-        },
       }))
   );
 
@@ -53,7 +45,7 @@ export default async function fetchCommitData({
         ref: commit.sha,
       });
 
-      const updatedCommit = {
+      return {
         id: commit.id,
         sha: commit.sha,
         message: commit.message,
@@ -61,18 +53,21 @@ export default async function fetchCommitData({
         commitDate: commit.commitDate,
         repositoryId: parseInt(repoId),
         userId,
-        commitAuthorId: commit.author?.id,
         additions: data.stats?.additions || 0,
         deletions: data.stats?.deletions || 0,
       };
-
-      await prisma.commit.upsert({
-        where: {
-          id: updatedCommit.id,
-        },
-        update: updatedCommit,
-        create: updatedCommit,
-      });
     })
-  );
+  ).then(async (commits) => {
+    await Promise.all(
+      commits.map(async (commit) => {
+        await prisma.commit.upsert({
+          where: {
+            id: commit.id,
+          },
+          update: commit,
+          create: commit,
+        });
+      })
+    );
+  });
 }

@@ -1,6 +1,11 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from 'next-auth/react';
-import { getDaysFromDate, getUserAuth } from '@/utils';
+import {
+  fetchCommitData,
+  getDaysFromDate,
+  getLastFetchDate,
+  getUserAuth,
+} from '@/utils';
 import { prisma } from '@/lib/prisma';
 
 export default async function commits(
@@ -13,7 +18,11 @@ export default async function commits(
     return res.status(401).json({ error: 'Permission Denied' });
   }
 
-  const { userId } = await getUserAuth({ session });
+  const { userId = '', octokit, login } = await getUserAuth({ session });
+
+  const sinceDate = getDaysFromDate({
+    days: 7,
+  });
 
   switch (req.method) {
     case 'GET':
@@ -26,9 +35,39 @@ export default async function commits(
           });
         }
 
-        const sinceDate = getDaysFromDate({
-          days: 7,
+        const repoData = await prisma.repository.findMany({
+          where: {
+            pushedAt: {
+              gte: sinceDate,
+            },
+            userId,
+          },
         });
+
+        await Promise.all([
+          repoData.map(async (repo) => {
+            const { shouldFetchNewData, updateLastFetchDate } =
+              await getLastFetchDate({
+                repoId: repo.id.toString(),
+                userId,
+                dataType: 'commits',
+                fetchType: 'repositories',
+              });
+
+            if (shouldFetchNewData) {
+              await fetchCommitData({
+                octokit,
+                login,
+                repoId: repo.id.toString(),
+                repoName: repo.name,
+                userId,
+                sinceDate: sinceDate.toISOString(),
+              });
+
+              await updateLastFetchDate;
+            }
+          }),
+        ]);
 
         const commitData = await prisma.commit.findMany({
           where: {

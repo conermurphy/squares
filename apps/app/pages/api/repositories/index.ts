@@ -23,14 +23,6 @@ export default async function repos(req: NextApiRequest, res: NextApiResponse) {
   switch (req.method) {
     case 'GET':
       try {
-        const { pageNum = '1' } = req.query;
-
-        if (Array.isArray(pageNum) || pageNum === undefined) {
-          return res.status(500).json({
-            error: 'Query parameter is not the expected type of "number"',
-          });
-        }
-
         if (shouldFetchNewData) {
           // Get all of the authenticated user's repos from GitHub
           const { data } = await octokit.rest.repos.listForUser({
@@ -110,10 +102,6 @@ export default async function repos(req: NextApiRequest, res: NextApiResponse) {
           orderBy: {
             pushedAt: 'desc',
           },
-          skip:
-            (parseInt(pageNum) - 1) *
-            parseInt(process.env.NEXT_PUBLIC_RESULTS_PER_PAGE),
-          take: parseInt(process.env.NEXT_PUBLIC_RESULTS_PER_PAGE),
         });
 
         return res.status(200).json(repoData);

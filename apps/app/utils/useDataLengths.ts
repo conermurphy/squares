@@ -21,24 +21,29 @@ export default function useDataLengths({ type }: IProps) {
     }),
   };
 
-  async function fetchData() {
-    if (type !== 'userCommits') {
-      await Promise.all([
-        await dataHelper.repos.fetchData({
-          endpoint: `/api/repositories/count`,
-        }),
-        await dataHelper.commits.fetchData({
-          endpoint: `/api/repositories/commits/count/${repoData.selectedRepoId}`,
-        }),
-      ]);
-    } else {
-      await dataHelper.userCommits.fetchData({
-        endpoint: `/api/commits/count/`,
-      });
-    }
+  async function fetchCommitLength() {
+    await dataHelper.commits.fetchData({
+      endpoint: `/api/repositories/commits/count/${repoData.selectedRepoId}`,
+    });
+  }
+
+  async function fetchRepoLength() {
+    await dataHelper.repos.fetchData({
+      endpoint: `/api/repositories/count`,
+    });
   }
 
   useEffect(() => {
+    async function fetchData() {
+      if (type !== 'userCommits') {
+        await Promise.all([fetchRepoLength(), fetchCommitLength()]);
+      } else {
+        await dataHelper.userCommits.fetchData({
+          endpoint: `/api/commits/count/`,
+        });
+      }
+    }
+
     fetchData();
   }, [repoData.selectedRepoId]);
 
@@ -51,6 +56,9 @@ export default function useDataLengths({ type }: IProps) {
       typeof dataHelper.userCommits.data === 'number'
         ? dataHelper.userCommits.data
         : 0,
-    refetchData: fetchData,
+    dataFetchers: {
+      fetchCommitLength,
+      fetchRepoLength,
+    },
   };
 }

@@ -47,31 +47,69 @@ export default async function commits(
 
         // If shouldFetchNewData === false, return existing from Prisma
         if (shouldFetchNewData) {
-          const repoData = await prisma?.repository.findUnique({
-            where: {
-              id: parseInt(id),
-            },
-            select: {
-              name: true,
-              lastFetchDates: {
-                where: {
-                  repositoryId: parseInt(id),
-                },
-                select: {
-                  commits: true,
+          await prisma?.repository
+            .findUnique({
+              where: {
+                id: parseInt(id),
+              },
+              select: {
+                name: true,
+                lastFetchDates: {
+                  where: {
+                    repositoryId: parseInt(id),
+                  },
+                  select: {
+                    commits: true,
+                  },
                 },
               },
-            },
-          });
+            })
+            .then(async (data) => {
+              const commitData = await octokit.paginate(
+                octokit.rest.repos.listCommits,
+                {
+                  owner: login,
+                  repo: data?.name || '',
+                  per_page: 100,
+                  since: sinceDate.toISOString(),
+                }
+              );
 
-          await fetchCommitData({
-            octokit,
-            login,
-            repoName: repoData?.name,
-            repoId: id,
-            sinceDate: sinceDate.toISOString(),
-            userId,
-          });
+              const commitsWithStats = await Promise.all(
+                commitData.map(async (commit) => {
+                  const { data: commitStatData } =
+                    await octokit.rest.repos.getCommit({
+                      owner: login,
+                      repo: data?.name || '',
+                      ref: commit.sha,
+                    });
+
+                  return {
+                    id: commit.node_id,
+                    sha: commit.sha,
+                    message: commit.commit.message,
+                    url: commit.url,
+                    commitDate: commit.commit.author?.date || '',
+                    repositoryId: parseInt(id),
+                    userId,
+                    additions: commitStatData.stats?.additions || 0,
+                    deletions: commitStatData.stats?.deletions || 0,
+                  };
+                })
+              );
+
+              await Promise.all(
+                commitsWithStats.map(async (commit) => {
+                  await prisma.commit.upsert({
+                    where: {
+                      id: commit.id,
+                    },
+                    update: commit,
+                    create: commit,
+                  });
+                })
+              );
+            });
 
           // Update the lastFetchData for the repo's commits
           await updateLastFetchDate;

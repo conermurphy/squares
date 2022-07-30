@@ -15,7 +15,7 @@ export default async function userCommitsCount(
   }
 
   // Get data about the user and octokit to query GitHub.
-  const { login } = await getUserAuth({ session });
+  const { login, userId } = await getUserAuth({ session });
 
   const sinceDate = getDaysFromDate({
     days: 7,
@@ -34,9 +34,7 @@ export default async function userCommitsCount(
               commitDate: {
                 gte: sinceDate,
               },
-              commitAuthor: {
-                login,
-              },
+              userId,
             },
           });
 
@@ -51,9 +49,7 @@ export default async function userCommitsCount(
               commitDate: {
                 gte: sinceDate,
               },
-              commitAuthor: {
-                login,
-              },
+              userId,
             },
           });
 

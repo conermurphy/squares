@@ -45,7 +45,7 @@ export default async function fetchCommitData({
       }))
   );
 
-  const commitsWithStats = await Promise.all(
+  await Promise.all(
     transformedCommits.map(async (commit) => {
       const { data } = await octokit.rest.repos.getCommit({
         owner: login,
@@ -53,7 +53,7 @@ export default async function fetchCommitData({
         ref: commit.sha,
       });
 
-      return {
+      const updatedCommit = {
         id: commit.id,
         sha: commit.sha,
         message: commit.message,
@@ -65,37 +65,13 @@ export default async function fetchCommitData({
         additions: data.stats?.additions || 0,
         deletions: data.stats?.deletions || 0,
       };
-    })
-  );
 
-  await Promise.all(
-    commitsWithStats.map(async (commit) => {
-      await prisma?.commit.upsert({
+      await prisma.commit.upsert({
         where: {
-          id: commit.id,
+          id: updatedCommit.id,
         },
-        update: commit,
-        create: commit,
-      });
-    })
-  );
-
-  await Promise.all(
-    transformedCommits.map(async (commit) => {
-      await prisma.commit.update({
-        where: {
-          id: commit.id,
-        },
-        data: {
-          commitAuthor: {
-            connectOrCreate: {
-              where: {
-                id: commit.author.id,
-              },
-              create: { ...commit.author },
-            },
-          },
-        },
+        update: updatedCommit,
+        create: updatedCommit,
       });
     })
   );

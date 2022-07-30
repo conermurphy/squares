@@ -33,7 +33,7 @@ function percentageMaker({ data }: IPercentageMakerProps): [string, number][] {
 export default function Languages({ dataHelper, headerData }: IProps) {
   const { pathname } = useRouter();
 
-  const isDashboard = !['/user', '/commits', '/settings'].includes(pathname);
+  const isDashboard = !['/user', '/settings'].includes(pathname);
 
   const {
     repoData: { selectedRepoId },

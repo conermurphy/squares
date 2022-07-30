@@ -71,9 +71,7 @@ export default async function commits(
               commitDate: {
                 gte: sinceDate,
               },
-              commitAuthor: {
-                login,
-              },
+              userId,
             },
             orderBy: {
               commitDate: 'desc',
@@ -91,9 +89,7 @@ export default async function commits(
               commitDate: {
                 gte: sinceDate,
               },
-              commitAuthor: {
-                login,
-              },
+              userId,
             },
             orderBy: {
               commitDate: 'desc',

@@ -1,7 +1,13 @@
 import { GetServerSideProps } from 'next';
 import { Session } from 'next-auth';
 import { handleAuthRedirect, useFetchData } from '@/utils';
-import { CommitsGraph, Languages, RecentRepositories, SEO } from '@/components';
+import {
+  CommitsGraph,
+  Languages,
+  RecentRepositories,
+  SEO,
+  Table,
+} from '@/components';
 import { useEffect } from 'react';
 import { GoCode, GoGitCommit, GoRepo } from 'react-icons/go';
 
@@ -17,6 +23,9 @@ export default function User() {
       method: 'GET',
     }),
     recentRepos: useFetchData({
+      method: 'GET',
+    }),
+    repoCommits: useFetchData({
       method: 'GET',
     }),
   };
@@ -67,6 +76,23 @@ export default function User() {
             dataHelper={dataHelper.recentRepos}
           />
         </div>
+        <Table
+          headings={[
+            'Commit SHA',
+            'Repository',
+            'Commit Date',
+            'Changes',
+            '🔗',
+          ]}
+          dataHelper={dataHelper.repoCommits}
+          tableHeaderData={{
+            heading: 'Commits Breakdown',
+            description:
+              'See the details behind your commits for the last 7 days',
+            icon: <GoGitCommit size="25px" />,
+          }}
+          type="userCommits"
+        />
       </div>
     </>
   );

@@ -13,7 +13,7 @@ export default async function commits(
     return res.status(401).json({ error: 'Permission Denied' });
   }
 
-  const { login } = await getUserAuth({ session });
+  const { userId } = await getUserAuth({ session });
 
   switch (req.method) {
     case 'GET':
@@ -35,9 +35,7 @@ export default async function commits(
             commitDate: {
               gte: sinceDate,
             },
-            commitAuthor: {
-              login,
-            },
+            userId,
           },
           orderBy: {
             commitDate: 'desc',

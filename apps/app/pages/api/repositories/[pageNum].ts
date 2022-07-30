@@ -38,7 +38,7 @@ export default async function repos(req: NextApiRequest, res: NextApiResponse) {
           });
 
           // Transform the repo into the datashape we need and fetch the langauges for it.
-          const transformedRepos = await Promise.all(
+          await Promise.all(
             data.map(async (repo) => {
               const {
                 id,
@@ -60,7 +60,7 @@ export default async function repos(req: NextApiRequest, res: NextApiResponse) {
                   repo: name,
                 });
 
-              return {
+              const updatedRepo = {
                 id,
                 nodeId,
                 name,
@@ -74,18 +74,27 @@ export default async function repos(req: NextApiRequest, res: NextApiResponse) {
                 languages,
                 userId: userId || '',
               };
-            })
-          );
 
-          // Try and update the repo with new data, if the id doesn't exist, create a new entry
-          await Promise.all(
-            transformedRepos.map(async (repo) => {
-              await prisma?.repository.upsert({
+              await prisma.repository.upsert({
                 where: {
-                  id: repo.id,
+                  id: updatedRepo.id,
                 },
-                update: repo,
-                create: repo,
+                update: updatedRepo,
+                create: {
+                  ...updatedRepo,
+                  lastFetchDates: {
+                    connectOrCreate: {
+                      where: {
+                        repositoryId: repo.id,
+                      },
+                      create: {
+                        commits: '',
+                        contributors: '',
+                        pullRequests: '',
+                      },
+                    },
+                  },
+                },
               });
             })
           );

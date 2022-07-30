@@ -1,52 +1,42 @@
-import React, { useEffect, useState } from 'react';
-import { useDataLengths } from '@/utils';
+import React, { useEffect } from 'react';
 import { useRepository } from '@/contexts';
 import { DataHelper } from '@/types/types';
 
 interface IProps {
-  dataFetch: DataHelper['fetchData'];
+  dataHelper: DataHelper;
   type: 'repositories' | 'commits' | 'userCommits';
+  pageState: {
+    pageNumber: number;
+    setPageNumber: React.Dispatch<React.SetStateAction<number>>;
+  };
 }
 
 export default function TablePagination({
-  dataFetch,
+  dataHelper,
   type,
+  pageState,
 }: IProps): JSX.Element {
-  const [pageNumber, setPageNumber] = useState(1);
+  const { pageNumber, setPageNumber } = pageState;
 
   const { repoData, setRepoData } = useRepository();
 
-  const { reposLength, commitsLength, userCommitsLength } = useDataLengths({
-    type,
-  });
+  const { fetchData: dataFetch, data } = dataHelper;
 
-  let dataLength = 0;
+  const dataLength =
+    (data && typeof data !== 'number' && Array.isArray(data) && data.length) ||
+    0;
 
-  switch (type) {
-    case 'repositories':
-      dataLength = reposLength;
-      break;
-    case 'commits':
-      dataLength = commitsLength;
-      break;
-    case 'userCommits':
-      dataLength = userCommitsLength;
-      break;
-    default:
-      break;
-  }
-
-  const totalPages = Math.round(
+  const totalPages = Math.ceil(
     dataLength / parseInt(process.env.NEXT_PUBLIC_RESULTS_PER_PAGE)
   );
 
   useEffect(() => {
     const fetchData = async () => {
       if (type === 'repositories') {
-        await dataFetch({ endpoint: `/api/repositories/${pageNumber}` });
+        await dataFetch({ endpoint: `/api/repositories` });
         setRepoData({
           ...repoData,
-          totalRepos: reposLength,
+          totalRepos: dataLength,
         });
       }
     };
@@ -70,7 +60,7 @@ export default function TablePagination({
           });
         }
         await dataFetch({
-          endpoint: `/api/repositories/commits/${repoData.selectedRepoId}/${pageNumber}`,
+          endpoint: `/api/repositories/commits/${repoData.selectedRepoId}`,
         }).then(() => {
           setRepoData({
             ...repoData,
@@ -80,7 +70,7 @@ export default function TablePagination({
       }
       if (type === 'userCommits') {
         await dataFetch({
-          endpoint: `/api/commits/${pageNumber}`,
+          endpoint: `/api/commits`,
         });
       }
     };
@@ -109,7 +99,7 @@ export default function TablePagination({
       <button
         type="button"
         className={buttonStyles}
-        disabled={pageNumber === totalPages || !dataLength}
+        disabled={pageNumber === totalPages || !dataLength || totalPages <= 1}
         onClick={() => {
           setPageNumber(pageNumber + 1);
         }}

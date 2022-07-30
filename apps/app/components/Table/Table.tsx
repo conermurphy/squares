@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { GoMarkGithub, GoDiffAdded, GoDiffRemoved } from 'react-icons/go';
 import {
   DataHelper,
@@ -26,6 +26,9 @@ export default function Table({
   dataHelper,
   type,
 }: IProps) {
+  const [pageNumber, setPageNumber] = useState(1);
+  const pageState = { pageNumber, setPageNumber };
+
   const borderClasses = 'border-b border-tableBorder';
 
   const { setRepoData, repoData } = useRepository();
@@ -118,75 +121,82 @@ export default function Table({
                 Array.isArray(data) &&
                 Boolean(data?.length) &&
                 (isCommit(data) || isRepo(data)) &&
-                data?.map((row) => {
-                  const isRowDataCommit = isRowCommit(row);
+                data
+                  .slice(
+                    parseInt(process.env.NEXT_PUBLIC_RESULTS_PER_PAGE) *
+                      (pageNumber - 1),
+                    parseInt(process.env.NEXT_PUBLIC_RESULTS_PER_PAGE) *
+                      pageNumber
+                  )
+                  ?.map((row) => {
+                    const isRowDataCommit = isRowCommit(row);
 
-                  return (
-                    <tr key={row.id}>
-                      <td
-                        className={`p-5 pl-10 font-body ${borderClasses} overflow-hidden text-ellipsis`}
-                      >
-                        {isRowDataCommit ? row.sha : row.name}
-                      </td>
-                      <td className={borderClasses}>
-                        {isRowDataCommit
-                          ? row.repository.name
-                          : new Date(row.createdAt).toLocaleDateString()}
-                      </td>
-                      <td className={borderClasses}>
-                        {isRowDataCommit
-                          ? new Date(row.commitDate).toLocaleDateString()
-                          : new Date(row.pushedAt).toLocaleDateString()}
-                      </td>
-                      {isRowDataCommit ? (
+                    return (
+                      <tr key={row.id}>
+                        <td
+                          className={`p-5 pl-10 font-body ${borderClasses} overflow-hidden text-ellipsis`}
+                        >
+                          {isRowDataCommit ? row.sha : row.name}
+                        </td>
                         <td className={borderClasses}>
-                          <div className="flex flex-row items-center gap-6">
-                            <div className="flex flex-row items-center gap-1">
-                              <GoDiffAdded size="18px" color="#3FB950" />
-                              <span>{row.additions}</span>
+                          {isRowDataCommit
+                            ? row.repository.name
+                            : new Date(row.createdAt).toLocaleDateString()}
+                        </td>
+                        <td className={borderClasses}>
+                          {isRowDataCommit
+                            ? new Date(row.commitDate).toLocaleDateString()
+                            : new Date(row.pushedAt).toLocaleDateString()}
+                        </td>
+                        {isRowDataCommit ? (
+                          <td className={borderClasses}>
+                            <div className="flex flex-row items-center gap-6">
+                              <div className="flex flex-row items-center gap-1">
+                                <GoDiffAdded size="18px" color="#3FB950" />
+                                <span>{row.additions}</span>
+                              </div>
+                              <div className="flex flex-row items-center gap-1">
+                                <GoDiffRemoved size="18px" color="#F85149" />
+                                <span>{row.deletions}</span>
+                              </div>
                             </div>
-                            <div className="flex flex-row items-center gap-1">
-                              <GoDiffRemoved size="18px" color="#F85149" />
-                              <span>{row.deletions}</span>
-                            </div>
+                          </td>
+                        ) : null}
+                        <td className={borderClasses}>
+                          <div className="w-fit">
+                            <a
+                              href={row.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              <GoMarkGithub size="23px" />
+                            </a>
                           </div>
                         </td>
-                      ) : null}
-                      <td className={borderClasses}>
-                        <div className="w-fit">
-                          <a
-                            href={row.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <GoMarkGithub size="23px" />
-                          </a>
-                        </div>
-                      </td>
-                      {!isRowDataCommit ? (
-                        <td className={borderClasses}>
-                          <button
-                            type="button"
-                            className={`border border-text px-4 py-2 rounded text-xs ${
-                              row.id === repoData.selectedRepoId
-                                ? 'bg-accent'
-                                : ''
-                            }`}
-                            onClick={() =>
-                              setRepoData({
-                                ...repoData,
-                                selectedRepoId: row.id,
-                                selectedRepoName: row.name,
-                              })
-                            }
-                          >
-                            Select
-                          </button>
-                        </td>
-                      ) : null}
-                    </tr>
-                  );
-                })}
+                        {!isRowDataCommit ? (
+                          <td className={borderClasses}>
+                            <button
+                              type="button"
+                              className={`border border-text px-4 py-2 rounded text-xs ${
+                                row.id === repoData.selectedRepoId
+                                  ? 'bg-accent'
+                                  : ''
+                              }`}
+                              onClick={() =>
+                                setRepoData({
+                                  ...repoData,
+                                  selectedRepoId: row.id,
+                                  selectedRepoName: row.name,
+                                })
+                              }
+                            >
+                              Select
+                            </button>
+                          </td>
+                        ) : null}
+                      </tr>
+                    );
+                  })}
 
               {/* If data is loading than display a skeleton of content to be replaced with actual data */}
               {loading &&
@@ -242,7 +252,11 @@ export default function Table({
                 ))}
             </tbody>
           </table>
-          <TablePagination dataFetch={dataHelper.fetchData} type={type} />
+          <TablePagination
+            dataHelper={dataHelper}
+            type={type}
+            pageState={pageState}
+          />
         </div>
       </section>
     </div>

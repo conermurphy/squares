@@ -1,11 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from 'next-auth/react';
-import {
-  fetchCommitData,
-  getDaysFromDate,
-  getLastFetchDate,
-  getUserAuth,
-} from '@/utils';
+import { getDaysFromDate, getLastFetchDate, getUserAuth } from '@/utils';
 import { prisma } from '@/lib/prisma';
 
 export default async function commits(
@@ -28,7 +23,7 @@ export default async function commits(
     });
   }
 
-  const [id, pageNumber = '1'] = params;
+  const [id] = params;
 
   const sinceDate = getDaysFromDate({
     days: 21,
@@ -88,7 +83,7 @@ export default async function commits(
                     id: commit.node_id,
                     sha: commit.sha,
                     message: commit.commit.message,
-                    url: commit.url,
+                    url: commit.html_url,
                     commitDate: commit.commit.author?.date || '',
                     repositoryId: parseInt(id),
                     userId,
@@ -128,10 +123,6 @@ export default async function commits(
           include: {
             repository: true,
           },
-          skip:
-            (parseInt(pageNumber) - 1) *
-            parseInt(process.env.NEXT_PUBLIC_RESULTS_PER_PAGE),
-          take: parseInt(process.env.NEXT_PUBLIC_RESULTS_PER_PAGE),
         });
 
         return res.status(200).json(commitData);

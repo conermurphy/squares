@@ -8,13 +8,15 @@ import {
 } from 'react-icons/go';
 import { handleAuthRedirect, useFetchData } from '@/utils';
 import { useEffect } from 'react';
-import { useRepository } from '@/contexts';
+import { useRepository, useUser } from '@/contexts';
 import { Contributors, Languages, SEO, Statistics, Table } from '../components';
 
 export default function Home() {
   const {
     repoData: { selectedRepoId },
   } = useRepository();
+
+  const { userData } = useUser();
 
   const dataHelper = {
     commits: useFetchData({
@@ -55,9 +57,9 @@ export default function Home() {
         metaDescription="See all your GitHub data easier than ever."
       />
       <div className="flex flex-col gap-9 max-w-full">
-        <h1 className="text-4xl font-heading mx-5 md:mx-10 lg:m-0">
-          Your Repositories
-        </h1>
+        <h1 className="text-4xl font-heading mx-5 md:mx-10 lg:m-0">{`Welcome${
+          userData.name ? `, ${userData?.name}` : ''
+        }`}</h1>
         <Table
           headings={['Repo Name', 'Created', 'Last Updated', '🔗', '✅']}
           dataHelper={dataHelper.repos}

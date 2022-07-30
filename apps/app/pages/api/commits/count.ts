@@ -15,7 +15,7 @@ export default async function userCommitsCount(
   }
 
   // Get data about the user and octokit to query GitHub.
-  const { login } = await getUserAuth({ session });
+  const { login, userId } = await getUserAuth({ session });
 
   const sinceDate = getDaysFromDate({
     days: 7,
@@ -28,15 +28,13 @@ export default async function userCommitsCount(
         let count = 0;
         let userCommitsLength;
 
-        while (!userCommitsLength || count < maxTries) {
+        while (count < maxTries) {
           userCommitsLength = await prisma.commit.count({
             where: {
               commitDate: {
                 gte: sinceDate,
               },
-              commitAuthor: {
-                login,
-              },
+              userId,
             },
           });
 
@@ -45,7 +43,20 @@ export default async function userCommitsCount(
 
         return res.status(200).json(userCommitsLength);
       } catch (e) {
-        return res.status(500).json({ error: 'Error fetching repos' });
+        try {
+          const userCommitsLength = await prisma.commit.count({
+            where: {
+              commitDate: {
+                gte: sinceDate,
+              },
+              userId,
+            },
+          });
+
+          return res.status(200).json(userCommitsLength);
+        } catch (err) {
+          return res.status(500).json({ error: 'Error fetching repos' });
+        }
       }
     default:
       res.setHeader('Allow', ['GET']);

@@ -34,18 +34,10 @@ export default async function fetchCommitData({
         commitDate: commit.commit.author?.date || '',
         repositoryId: parseInt(repoId),
         userId,
-        commitAuthorId: commit.author?.id,
-        author: {
-          id: commit.author?.id || 0,
-          nodeId: commit.author?.node_id,
-          login: commit.author?.login,
-          imageUrl: commit.author?.avatar_url,
-          url: commit.author?.html_url,
-        },
       }))
   );
 
-  const commitsWithStats = await Promise.all(
+  await Promise.all(
     transformedCommits.map(async (commit) => {
       const { data } = await octokit.rest.repos.getCommit({
         owner: login,
@@ -61,42 +53,21 @@ export default async function fetchCommitData({
         commitDate: commit.commitDate,
         repositoryId: parseInt(repoId),
         userId,
-        commitAuthorId: commit.author?.id,
         additions: data.stats?.additions || 0,
         deletions: data.stats?.deletions || 0,
       };
     })
-  );
-
-  await Promise.all(
-    commitsWithStats.map(async (commit) => {
-      await prisma?.commit.upsert({
-        where: {
-          id: commit.id,
-        },
-        update: commit,
-        create: commit,
-      });
-    })
-  );
-
-  await Promise.all(
-    transformedCommits.map(async (commit) => {
-      await prisma.commit.update({
-        where: {
-          id: commit.id,
-        },
-        data: {
-          commitAuthor: {
-            connectOrCreate: {
-              where: {
-                id: commit.author.id,
-              },
-              create: { ...commit.author },
-            },
+  ).then(async (commits) => {
+    await Promise.all(
+      commits.map(async (commit) => {
+        await prisma.commit.upsert({
+          where: {
+            id: commit.id,
           },
-        },
-      });
-    })
-  );
+          update: commit,
+          create: commit,
+        });
+      })
+    );
+  });
 }

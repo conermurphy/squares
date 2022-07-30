@@ -1,22 +1,13 @@
 import { GetServerSideProps } from 'next';
 import { Session } from 'next-auth';
 import { handleAuthRedirect, useFetchData } from '@/utils';
-import { CommitsGraph, Languages, RecentRepositories, SEO } from '@/components';
+import { Languages, RecentRepositories, SEO } from '@/components';
 import { useEffect } from 'react';
-import { GoCode, GoGitCommit, GoRepo } from 'react-icons/go';
-import { useUser } from '@/contexts';
+import { GoCode, GoRepo } from 'react-icons/go';
 
 export default function User() {
-  const { userData } = useUser();
-
   const dataHelper = {
-    commits: useFetchData({
-      method: 'GET',
-    }),
     languages: useFetchData({
-      method: 'GET',
-    }),
-    repositories: useFetchData({
       method: 'GET',
     }),
     recentRepos: useFetchData({
@@ -37,20 +28,12 @@ export default function User() {
     <>
       <SEO
         metaTitle="User"
-        metaDescription="A breakdown of your commits, languages and recent repositories"
+        metaDescription="A breakdown of your languages and recent repositories"
       />
       <div className="flex flex-col gap-9 max-w-full">
-        <h1 className="text-4xl font-heading mx-5 md:mx-10 lg:m-0">{`Welcome${
-          userData.name ? `, ${userData?.name}` : ''
-        }`}</h1>
-        <CommitsGraph
-          headerData={{
-            heading: 'Your Commits',
-            description: 'Track how your commits compare day to day',
-            icon: <GoGitCommit size="25px" />,
-          }}
-          dataHelper={dataHelper.commits}
-        />
+        <h1 className="text-4xl font-heading mx-5 md:mx-10 lg:m-0">
+          Your Stats
+        </h1>
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-9">
           <Languages
             headerData={{

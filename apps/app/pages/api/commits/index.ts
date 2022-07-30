@@ -71,9 +71,7 @@ export default async function commits(
               commitDate: {
                 gte: sinceDate,
               },
-              commitAuthor: {
-                login,
-              },
+              userId,
             },
             orderBy: {
               commitDate: 'desc',
@@ -85,7 +83,23 @@ export default async function commits(
 
         return res.status(200).json(commitData);
       } catch (e) {
-        return res.status(500).json({ error: 'Error fetching commits' });
+        try {
+          const commitData = await prisma.commit.findMany({
+            where: {
+              commitDate: {
+                gte: sinceDate,
+              },
+              userId,
+            },
+            orderBy: {
+              commitDate: 'desc',
+            },
+          });
+
+          return res.status(200).json(commitData);
+        } catch (err) {
+          return res.status(500).json({ error: 'Error fetching commits' });
+        }
       }
     default:
       res.setHeader('Allow', ['GET']);

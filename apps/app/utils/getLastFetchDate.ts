@@ -41,16 +41,12 @@ export default async function getLastFetchDate({
   }: UpdateFetchDatesProps) {
     // If repositories based dates, update the provided keys, last fetch date to today.
     if (type === 'repositories' && dataKey) {
-      await prisma.lastFetchDates.upsert({
+      await prisma.lastFetchDates.update({
         where: {
           repositoryId: parseInt(repoId),
         },
-        update: {
+        data: {
           [dataKey]: current.toISOString(),
-        },
-        create: {
-          [dataKey]: current.toISOString(),
-          repositoryId: parseInt(repoId),
         },
       });
     }

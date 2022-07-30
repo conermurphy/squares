@@ -1,6 +1,6 @@
 import React from 'react';
 import { BiLineChart } from 'react-icons/bi';
-import { GoGitCommit, GoRepo, GoSettings } from 'react-icons/go';
+import { GoPerson, GoSettings } from 'react-icons/go';
 import NavLink from '../NavLink/NavLink';
 import UserAccount from '../UserAccount/UserAccount';
 
@@ -14,17 +14,8 @@ export default function MobileNavBar() {
             href="/"
             icon={<BiLineChart size="20px" />}
           />
-          <NavLink
-            text="Repositories"
-            href="/repositories"
-            icon={<GoRepo size="20px" />}
-          />
           <div className="grow">
-            <NavLink
-              text="Commits"
-              href="/commits"
-              icon={<GoGitCommit size="25px" />}
-            />
+            <NavLink text="User" href="/user" icon={<GoPerson size="20px" />} />
           </div>
           <NavLink
             text="Settings"

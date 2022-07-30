@@ -16,10 +16,9 @@ export default function TablePagination({
 
   const { repoData, setRepoData } = useRepository();
 
-  const { reposLength, commitsLength, userCommitsLength, refetchData } =
-    useDataLengths({
-      type,
-    });
+  const { reposLength, commitsLength, userCommitsLength } = useDataLengths({
+    type,
+  });
 
   let dataLength = 0;
 
@@ -78,10 +77,6 @@ export default function TablePagination({
             repoCommitsLoading: false,
           });
         });
-
-        if (!dataLength) {
-          await refetchData();
-        }
       }
       if (type === 'userCommits') {
         await dataFetch({
@@ -91,7 +86,7 @@ export default function TablePagination({
     };
 
     fetchData();
-  }, [pageNumber, repoData.selectedRepoId, dataLength]);
+  }, [pageNumber, repoData.selectedRepoId]);
 
   const buttonStyles =
     'border border-text px-4 py-2 rounded text-sm disabled:opacity-50 disabled:cursor-not-allowed';

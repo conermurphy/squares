@@ -24,7 +24,7 @@ export default function SEO({
   date = '',
 }: IProps) {
   const absoluteUrl = `${server}/${url}`;
-  const image = metaImage ? `${server}${metaImage}` : `${server}/favicon.png`;
+  const image = metaImage ? `${server}${metaImage}` : `${server}/squares.png`;
   const title = metaTitle ? `${metaTitle} | Squares` : 'Squares';
 
   return (

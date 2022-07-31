@@ -6,12 +6,12 @@ describe('Header', () => {
     render(<Header />);
 
     const title = screen.getByText(/squares/i);
-    const link = screen.getByText(/waiting list/i);
+    const link = screen.getByText(/get started/i);
 
     expect(title).toBeVisible();
     expect(link).toBeVisible();
 
-    expect(link).toHaveAttribute('href', '/#signup');
+    expect(link).toHaveAttribute('href', 'https://app.squares.so');
     expect(title).toHaveAttribute('href', '/');
   });
 });

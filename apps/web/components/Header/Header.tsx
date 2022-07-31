@@ -8,8 +8,8 @@ export default function Header(): JSX.Element {
       <Link href="/" passHref>
         <a className="font-heading text-text text-2xl md:text-3xl">Squares</a>
       </Link>
-      <CustomLink href="/#signup" isSmall isExternal={false}>
-        Waiting list
+      <CustomLink href="https://app.squares.so" isSmall isExternal>
+        Get Started
       </CustomLink>
     </header>
   );

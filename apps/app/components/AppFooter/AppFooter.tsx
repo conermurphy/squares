@@ -4,7 +4,7 @@ import React from 'react';
 export default function LastFetchDate() {
   const { userData } = useUser();
   return (
-    <div className="opacity-75 flex flex-col gap-3 text-sm pt-6">
+    <div className="opacity-75 flex flex-col gap-3 text-sm pt-6 mx-5 md:mx-10 lg:mx-0">
       <p>
         Data last fetched on:{' '}
         {userData?.lastFetchRepositories ? (

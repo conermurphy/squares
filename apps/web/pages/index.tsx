@@ -10,8 +10,8 @@ import {
 function LinkGroup(): JSX.Element {
   return (
     <div className="flex flex-col gap-4 sm:flex-row md:gap-12">
-      <CustomLink href="/#signup" isExternal={false}>
-        Sign up to our waiting list
+      <CustomLink href="https://app.squares.so" isExternal>
+        Get Started
       </CustomLink>
       <CustomLink
         href="https://github.com/conermurphy/squares"
@@ -81,10 +81,10 @@ export default function Web() {
           className="flex flex-col items-center justify-center mt-32 mb-36"
         >
           <h2 className="font-heading text-4xl md:text-6xl max-w-screen-lg text-center mb-10">
-            Sign up to our <span className="text-brand">waiting list </span>
-            and get notified when we go live.
+            Sign up and see <br /> your{' '}
+            <span className="text-brand">dashboard</span> today.
           </h2>
-          <EmailSignup />
+          <LinkGroup />
         </section>
       </div>
     </>

@@ -58,7 +58,7 @@ export default function Home() {
       />
       <div className="flex flex-col gap-9 max-w-full">
         <h1 className="text-4xl font-heading mx-5 md:mx-10 lg:m-0">{`Welcome${
-          userData.name ? `, ${userData?.name}` : ''
+          userData.name ? `, ${userData?.name}` : 'hello'
         }`}</h1>
         <Table
           headings={['Repo Name', 'Created', 'Last Updated', '🔗', '✅']}
